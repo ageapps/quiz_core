@@ -15,14 +15,9 @@ router.get('/creditos', function(req, res, next) {
         subtitle2: 'Y su video molon'
     });
 });
-router.get('/quizes', function(req, res, next) {
-    res.render('quizes', {
-        title: 'Quizes'
-
-    });
-});
 
 router.get("/quizzes", quizController.index);
+router.get("/quizzes/search", quizController.search);
 router.get("/quizzes/:quizId(\\d+)", quizController.question);
 router.get("/quizzes/:quizId(\\d+)/check", quizController.check);
 module.exports = router;

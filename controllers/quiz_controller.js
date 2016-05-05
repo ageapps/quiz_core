@@ -28,18 +28,8 @@ exports.index = function(req, res, next) {
         });
     }).catch(function(error) {
         next(error);
-    })
+    });
 }
-
-
-
-// exports.question = function(req, res, next) {
-//     var answer = req.query.answer || "";
-//     res.render("quizes/question", {
-//         question: "Capital de Italia",
-//         answer: answer
-//     });
-// };
 
 exports.check = function(req, res, next) {
     models.Quiz.findById(req.params.quizId).then(function(quiz) {
@@ -58,12 +48,21 @@ exports.check = function(req, res, next) {
         next(error);
     });
 };
-// exports.check = function(req, res, next) {
-//     var answer = req.query.answer || "";
-//     var result = ((answer === "Roma") ? "Correcta" : "Erronea");
-//     res.render("quizes/check", {
-//         result: result,
-//         answer: answer
-//     });
-//
-// };
+
+exports.search = function(req, res, next) {
+    var text = req.query.search || "";
+    models.Quiz.findAll({
+        where: {
+            question: {
+                $like: "%"+text+"%"
+            }
+        }
+    }).then(function(quizzes) {
+        res.render('quizzes/search', {
+            quizzes: quizzes
+        });
+    }).catch(function(error) {
+        next(error);
+    });
+
+}

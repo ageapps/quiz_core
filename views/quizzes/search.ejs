@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Quizzes Found</h1>
+</div>
+<br/>
+<div class="container">
+    <% if  (quizzes.length > 0){ %>
+        <table class="table">
+            <% for (var i in quizzes){ %>
+                <tr>
+                    <td>
+                        <a href="/quizzes/<%= quizzes[i].id %>">
+                            <%= quizzes[i].question %>
+                        </a>
+                    </td>
+                </tr>
+                <% } %>
+        </table>
+        <% } else{ %>
+            <h3>No quiz was found</h3>
+        <% } %>
+</div>
