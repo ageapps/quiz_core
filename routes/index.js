@@ -16,6 +16,9 @@ router.get('/creditos', function(req, res, next) {
     });
 });
 
+// Autoload de rutas con quizId
+router.param("quizId",quizController.load);
+
 router.get("/quizzes", quizController.index);
 router.get("/quizzes/search", quizController.search);
 router.get("/quizzes/:quizId(\\d+)", quizController.question);
