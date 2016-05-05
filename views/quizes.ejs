@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <% include ../views/templates/head %>
-</head>
-<body>
-<header>
-    <% include ../views/templates/nav %>
-</header>
-
 <div class="container">
     <h1><%= title %></h1>
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <h2>Custom search field</h2>
+                <h2>Busca un quiz</h2>
                 <div id="custom-search-input">
                     <div class="input-group col-md-12">
                         <input type="text" class="form-control input-lg" placeholder="Buscar"/>
@@ -26,17 +16,9 @@
                 </div>
             </div>
         </div>
+        <br>
+        <p>
+            <a href="/quizzes" class="btn btn-default">Empieza un Quiz</a>
+        </p>
     </div>
-    <br>
-    <p>
-        <a href="/question" class="btn btn-default">Empieza un Quiz</a>
-    </p>
 </div>
-<footer>
-    <% include ../views/templates/footer %>
-</footer>
-
-<% include ../views/templates/scripts %>
-</body>
-
-</html>

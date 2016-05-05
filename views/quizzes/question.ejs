@@ -1,0 +1,13 @@
+<div class="container">
+    <h1>Quiz el Juego de Preguntas</h1>
+
+    <form role="form" method="get" action="/quizzes/<%= quiz.id %>/check">
+        <div class="form-group">
+            <label for="answer">
+                <%= quiz.question %>
+            </label>
+            <input type="text" class="form-control" name="answer" id="answer" value="<%= answer %>" placeholder="Responde aquí">
+        </div>
+        <button type="submit" class="btn btn-default">Responder</button>
+    </form>
+</div>

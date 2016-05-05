@@ -1,0 +1,16 @@
+<div class="container">
+    <h1>Quizzes</h1>
+</div>
+<div class="container">
+    <table class="table">
+        <% for (var i in quizzes){ %>
+            <tr>
+                <td>
+                    <a href="/quizzes/<%= quizzes[i].id %>">
+                        <%= quizzes[i].question %>
+                    </a>
+                </td>
+            </tr>
+            <% } %>
+    </table>
+</div>
