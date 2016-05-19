@@ -106,3 +106,44 @@ exports.create = function(req, res, next) {
         next(error);
     });
 };
+
+exports.update = function(req, res, next) {
+    req.quiz.question= req.body.quiz.question;
+    req.quiz.answer= req.body.quiz.answer;
+
+        req.quiz.save({
+        fields: ["question", "answer"]
+    }).then(function(quiz) {
+        req.flash("success", "Quiz succesfully edited");
+        res.redirect("/quizzes");
+    }).catch(Sequelize.ValidationError, function(error) {
+
+        req.flash("error", "Errors in form ");
+        for (var i in error.errors) {
+            req.flash("error", error.errors[i].value);
+        }
+        res.render('quizzes/edit', {
+            quiz: req.quiz
+        });
+
+    }).catch(function(error) {
+        req.flash("error", "Errors while editing Quiz: " + error.message);
+        next(error);
+    });
+};
+exports.edit = function(req, res, next) {
+    var quiz = req.quiz;
+    res.render('quizzes/edit', {
+        quiz: quiz
+    });
+
+};
+exports.destroy = function(req, res, next) {
+    req.quiz.destroy().then(function(){
+      req.flash("success", "Quizz succesfully deleted. ");
+      res.redirect("/quizzes");
+    }).catch(function(error) {
+        req.flash("error", "Errors while deleting Quiz: " + error.message);
+        next(error);
+    });
+};

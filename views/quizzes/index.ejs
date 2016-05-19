@@ -27,6 +27,8 @@
                 <tr>
                     <th>#</th>
                     <th>Quiz</th>
+                    <th></th>
+                    <th></th>
                     <th>Author</th>
                 </tr>
             </thead>
@@ -35,12 +37,21 @@
                     <tr>
                         <th scope="row">
                             <%=  (+i+1) %>
-
                         </th>
                         <td>
+                            <span>
                             <a href="/quizzes/<%= quizzes[i].id %>">
                                 <%= quizzes[i].question %>
                             </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
+                        </td>
+                        <td>
+                            <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE"
+
+                             onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
                         </td>
                     </tr>
                     <% } %>

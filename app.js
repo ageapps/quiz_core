@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var partials = require('express-partials');
 var session = require('express-session');
 var flash = require('express-flash');
+var methodOverRide = require('method-override');
 var routes = require('./routes/index');
 
 var app = express();
@@ -28,6 +29,8 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+app.use(methodOverRide('_method', {methods:["POST","GET"]}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(partials());
 app.use(flash());
