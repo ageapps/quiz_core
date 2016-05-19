@@ -1,23 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-   <% include ../views/templates/head %>
-  </head>
-  <body>
+
+<head>
+    <% include ../views/templates/head %>
+</head>
+
+<body>
     <header>
-      <% include ../views/templates/nav %>
+        <% include ../views/templates/nav %>
     </header>
 
-<div>
-  <%- body %>
-</div>
+    <section>
+        <% if (messages.info){ %>
+            <div id="flashinfo" class="container">
+                <% for (var i in messages.success){ %>
+                    <div class="alert alert-warning" role="alert">
+                        <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                        <span class="sr-only">Info:</span>
+                        <%= messages.success[i] %>
+                    </div>
+                    <% } %>
+            </div>
+            <% } %>
+
+
+                <% if (messages.success){ %>
+                    <div id="flashsucces" class="container panel">
+                        <% for (var i in messages.success){ %>
+                            <div class="alert alert-success" role="alert">
+                                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                                <span class="sr-only">Success:</span>
+                                <%= messages.success[i] %>
+                            </div>
+                            <% } %>
+                    </div>
+                    <% } %>
+
+                        <% if (messages.error){ %>
+                            <div id="flasherror" class="container">
+                                <% for (var i in messages.error){ %>
+                                    <div class="alert alert-danger" role="alert">
+                                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        <%= messages.error[i] %>
+                                    </div>
+                                    <% } %>
+                            </div>
+                            <% } %>
+
+    </section>
+    <section>
+        <div>
+            <%- body %>
+        </div>
+    </section>
+
+
+
 
 
     <footer>
-            <% include ../views/templates/footer %>
+        <% include ../views/templates/footer %>
     </footer>
 
     <% include ../views/templates/scripts %>
-  </body>
+</body>
 
 </html>

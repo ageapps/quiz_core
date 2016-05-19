@@ -2,6 +2,7 @@
  * Created by adricacho on 3/5/16.
  */
 var models = require('../models');
+var Sequelize = require('sequelize');
 
 
 
@@ -22,7 +23,8 @@ exports.load = function(req, res, next, quizId) {
 exports.index = function(req, res, next) {
     models.Quiz.findAll().then(function(quizzes) {
         res.render('quizzes/index', {
-            quizzes: quizzes
+            quizzes: quizzes,
+            indexTitle: "Look for a quiz"
         });
     }).catch(function(error) {
         next(error);
@@ -58,11 +60,49 @@ exports.search = function(req, res, next) {
             }
         }
     }).then(function(quizzes) {
-        res.render('quizzes/search', {
-            quizzes: quizzes
+        res.render('quizzes/index', {
+            quizzes: quizzes,
+            indexTitle: "Quizzes found"
         });
     }).catch(function(error) {
         next(error);
     });
 
 }
+exports.new = function(req, res, next) {
+    var quiz = models.Quiz.build({
+        question: "",
+        answer: ""
+    });
+    res.render('quizzes/new', {
+        quiz: quiz
+    });
+};
+
+exports.create = function(req, res, next) {
+    var quiz = models.Quiz.build({
+        question: req.body.quiz.question,
+        answer: req.body.quiz.answer
+    });
+
+
+    quiz.save({
+        fields: ["question", "answer"]
+    }).then(function(quiz) {
+        req.flash("success", "Quiz succesfully created");
+        res.redirect("/quizzes");
+    }).catch(Sequelize.ValidationError, function(error) {
+
+        req.flash("error", "Errors in form ");
+        for (var i in error.errors) {
+            req.flash("error", error.errors[i].value);
+        }
+        res.render('quizzes/new', {
+            quiz: quiz
+        });
+
+    }).catch(function(error) {
+        req.flash("error", "Errors while creating Quiz: " + error.message);
+        next(error);
+    });
+};

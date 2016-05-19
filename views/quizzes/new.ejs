@@ -1,0 +1,17 @@
+<div class="container">
+    <h1>New Question</h1>
+    <form role="form" method="post" action="/quizzes">
+        <fieldset class="form-group">
+            <label for="question">Queston</label>
+            <input type="text" class="form-control" name = "quiz[question]" placeholder="Enter your Question" value="<%= quiz.question %>">
+            <small class="text-muted">Try to write a question that wasn´t made before</small>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="answer">Answer</label>
+            <input type="text" class="form-control" name = "quiz[answer]" placeholder="Your Answer" value="<%= quiz.answer %>">
+        </fieldset>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-primary">Reset</button>
+        <a href="/quizzes"><button type= "button" class = "btn btn-default">Cancel</button></a>
+    </form>
+</div>
