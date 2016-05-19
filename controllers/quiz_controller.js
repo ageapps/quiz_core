@@ -22,22 +22,29 @@ exports.load = function(req, res, next, quizId) {
 
 exports.index = function(req, res, next) {
     models.Quiz.findAll().then(function(quizzes) {
-        res.render('quizzes/index', {
-            quizzes: quizzes,
-            indexTitle: "Look for a quiz"
-        });
+        if (req.params.format == "json") {
+            res.json(quizzes);
+        } else {
+            res.render('quizzes/index', {
+                quizzes: quizzes,
+                indexTitle: "Look for a quiz"
+            });
+        }
     }).catch(function(error) {
         next(error);
     });
 }
 
 exports.question = function(req, res, next) {
-
-    var answer = req.query.answer || "";
-    res.render("quizzes/question", {
-        quiz: req.quiz,
-        answer: answer
-    });
+    if (req.params.format == "json") {
+        res.json(req.quiz);
+    } else {
+        var answer = req.query.answer || "";
+        res.render("quizzes/question", {
+            quiz: req.quiz,
+            answer: answer
+        });
+    }
 };
 
 
@@ -108,10 +115,10 @@ exports.create = function(req, res, next) {
 };
 
 exports.update = function(req, res, next) {
-    req.quiz.question= req.body.quiz.question;
-    req.quiz.answer= req.body.quiz.answer;
+    req.quiz.question = req.body.quiz.question;
+    req.quiz.answer = req.body.quiz.answer;
 
-        req.quiz.save({
+    req.quiz.save({
         fields: ["question", "answer"]
     }).then(function(quiz) {
         req.flash("success", "Quiz succesfully edited");
@@ -139,9 +146,9 @@ exports.edit = function(req, res, next) {
 
 };
 exports.destroy = function(req, res, next) {
-    req.quiz.destroy().then(function(){
-      req.flash("success", "Quizz succesfully deleted. ");
-      res.redirect("/quizzes");
+    req.quiz.destroy().then(function() {
+        req.flash("success", "Quizz succesfully deleted. ");
+        res.redirect("/quizzes");
     }).catch(function(error) {
         req.flash("error", "Errors while deleting Quiz: " + error.message);
         next(error);

@@ -18,9 +18,9 @@ router.get('/creditos', function(req, res, next) {
 
 // Autoload de rutas con quizId
 router.param("quizId",quizController.load);
-router.get("/quizzes", quizController.index);
+router.get("/quizzes.:format?", quizController.index);
 router.get("/quizzes/search", quizController.search);
-router.get("/quizzes/:quizId(\\d+)", quizController.question);
+router.get("/quizzes/:quizId(\\d+).:format?", quizController.question);
 router.get("/quizzes/:quizId(\\d+)/check", quizController.check);
 router.get("/quizzes/new", quizController.new);
 router.post("/quizzes", quizController.create);
