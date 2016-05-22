@@ -10,6 +10,7 @@ var http = require('http');
 
 /**
  * Get port from environment and store in Express.
+ heroku run ./node_modules/.bin/sequelize db:migrate --url postgres://hcarthtolgfcud:z3ptZMwk3mFW7wz0JSxW6k2TEm@ec2-23-23-224-174.compute-1.amazonaws.com:5432/dcgefj7svtar15
  */
 
 //var port = normalizePort( '9000');

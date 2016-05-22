@@ -3,4 +3,3 @@ node_modules
 quiz.sqlite
 .env
 npm-debug.log
-bower_components
