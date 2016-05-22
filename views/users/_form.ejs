@@ -1,0 +1,34 @@
+<script>
+    function confirmPassword() {
+        var pw1 = document.getElementById('user_password').value;
+        var pw2 = document.getElementById('user_confirm_password').value;
+
+        if (!pw1 || !pw2) {
+            alert('You have to fill in Password and Repeat Password.');
+            return false;
+        }
+
+        if (pw1 === pw2) {
+            return true;
+        } else {
+            alert('Passwords have to be the same.');
+            return false;
+        }
+    }
+</script>
+
+<fieldset class="form-group">
+    <label for="question">User</label>
+    <input type="text"  <% if(user.username){ %> <%= "disabled" %> <% } %> class="form-control" name="user[username]" placeholder="Enter your Username" value="<%= user.username %>">
+    <small class="text-muted">You can´t edit your username</small>
+</fieldset>
+<fieldset class="form-group">
+    <label for="user_password">Password:</label>
+    <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" />
+    <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" />
+</fieldset>
+<button type="submit" class="btn btn-primary" onclick="return confirmPassword()">Submit</button>
+<button type="reset" class="btn btn-primary">Reset</button>
+<a href="/users">
+    <button type="button" class="btn btn-default">Cancel</button>
+</a>

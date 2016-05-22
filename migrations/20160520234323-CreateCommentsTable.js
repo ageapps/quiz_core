@@ -5,12 +5,11 @@ module.exports = {
         /*
           Add altering commands here.
           Return a promise to correctly handle asynchronicity.
-heroku run ./node_modules/.bin/sequelize db:seed:all --url postgres://hcarthtolgfcud:z3ptZMwk3mFW7wz0JSxW6k2TEm@ec2-23-23-224-174.compute-1.amazonaws.com:5432/dcgefj7svtar15
+
           Example:
-          ./node_modules/.bin/sequelize migration:create --name AddCategoriesIdToQuizzesTable --url sqlite://$(pwd)/quiz.sqlite
           return queryInterface.createTable('users', { id: Sequelize.INTEGER });
         */
-        return queryInterface.createTable('Quizzes', {
+        return queryInterface.createTable('Comments', {
             id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -18,27 +17,14 @@ heroku run ./node_modules/.bin/sequelize db:seed:all --url postgres://hcarthtolg
                 autoIncrement: true,
                 unique: true
             },
-            question: {
-                type: Sequelize.STRING,
-                validate: {
-                    notEmpty: {
-                        msg: "Question is missing"
-                    }
-                }
+            QuizId: {
+                type: Sequelize.INTEGER
             },
-            answer: {
+            text: {
                 type: Sequelize.STRING,
                 validate: {
                     notEmpty: {
-                        msg: "Question is missing"
-                    }
-                }
-            },
-            category: {
-                type: Sequelize.STRING,
-                validate: {
-                    notEmpty: {
-                        msg: "Category is missing"
+                        msg: "Comment is missing"
                     }
                 }
             },
@@ -61,10 +47,10 @@ heroku run ./node_modules/.bin/sequelize db:seed:all --url postgres://hcarthtolg
         /*
           Add reverting commands here.
           Return a promise to correctly handle asynchronicity.
-./node_modules/.bin/sequelize seed:create --name FillQuizzesTable --url sqlite:///quiz.sqlite
+
           Example:
           return queryInterface.dropTable('users');
         */
-        return queryInterface.dropTable('Quizzes');
+        return queryInterface.dropTable('Comments');
     }
 };

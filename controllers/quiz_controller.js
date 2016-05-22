@@ -7,12 +7,15 @@ var Sequelize = require('sequelize');
 
 
 exports.load = function(req, res, next, quizId) {
-    models.Quiz.findById(quizId).then(function(quiz) {
+    // find quizz
+    models.Quiz.findById(quizId, {
+        include: [models.Comment]
+    }).then(function(quiz) {
         if (quiz) {
             req.quiz = quiz;
             next();
         } else {
-            throw new Error("No existe quizId" + quizId);
+            throw new Error(quizId + "Does not exist");
         }
     }).catch(function(error) {
         next(error);
@@ -33,16 +36,19 @@ exports.index = function(req, res, next) {
     }).catch(function(error) {
         next(error);
     });
-}
+};
 
 exports.question = function(req, res, next) {
     if (req.params.format == "json") {
         res.json(req.quiz);
     } else {
         var answer = req.query.answer || "";
+
         res.render("quizzes/question", {
             quiz: req.quiz,
-            answer: answer
+            answer: answer,
+            comment: "",
+            QuizId: req.quiz.id
         });
     }
 };
@@ -54,7 +60,7 @@ exports.check = function(req, res, next) {
     res.render("quizzes/check", {
         quiz: req.quiz,
         result: result,
-        answer: answer
+        answer: answer,
     });
 };
 
@@ -75,26 +81,31 @@ exports.search = function(req, res, next) {
         next(error);
     });
 
-}
+};
 exports.new = function(req, res, next) {
     var quiz = models.Quiz.build({
         question: "",
         answer: ""
     });
-    res.render('quizzes/new', {
-        quiz: quiz
+    models.Category.findAll().then(function(categories) {
+        res.render('quizzes/new', {
+            quiz: quiz,
+            categories: categories
+        });
+    }).catch(function(error) {
+        next(error);
     });
 };
 
 exports.create = function(req, res, next) {
     var quiz = models.Quiz.build({
         question: req.body.quiz.question,
-        answer: req.body.quiz.answer
+        answer: req.body.quiz.answer,
+        category: req.body.quiz.category
     });
 
-
     quiz.save({
-        fields: ["question", "answer"]
+        fields: ["question", "answer", "category"]
     }).then(function(quiz) {
         req.flash("success", "Quiz succesfully created");
         res.redirect("/quizzes");
@@ -104,8 +115,13 @@ exports.create = function(req, res, next) {
         for (var i in error.errors) {
             req.flash("error", error.errors[i].value);
         }
-        res.render('quizzes/new', {
-            quiz: quiz
+        models.Category.findAll().then(function(categories) {
+            res.render('quizzes/new', {
+                quiz: quiz,
+                categories: categories
+            }).catch(function(error) {
+                next(error);
+            });
         });
 
     }).catch(function(error) {
@@ -117,9 +133,10 @@ exports.create = function(req, res, next) {
 exports.update = function(req, res, next) {
     req.quiz.question = req.body.quiz.question;
     req.quiz.answer = req.body.quiz.answer;
+    req.quiz.category = req.body.quiz.category;
 
     req.quiz.save({
-        fields: ["question", "answer"]
+        fields: ["question", "answer", "category"]
     }).then(function(quiz) {
         req.flash("success", "Quiz succesfully edited");
         res.redirect("/quizzes");
@@ -129,8 +146,17 @@ exports.update = function(req, res, next) {
         for (var i in error.errors) {
             req.flash("error", error.errors[i].value);
         }
-        res.render('quizzes/edit', {
-            quiz: req.quiz
+        models.Category.findAll().then(function(categories) {
+            if (categories) {
+                res.render('quizzes/edit', {
+                    quiz: req.quiz,
+                    categories: categories
+                });
+            } else {
+                throw new Error("Error loading Categories");
+            }
+        }).catch(function(error) {
+            next(error);
         });
 
     }).catch(function(error) {
@@ -138,12 +164,23 @@ exports.update = function(req, res, next) {
         next(error);
     });
 };
+
 exports.edit = function(req, res, next) {
     var quiz = req.quiz;
-    res.render('quizzes/edit', {
-        quiz: quiz
-    });
 
+    models.Category.findAll().then(function(categories) {
+        if (categories) {
+            req.categories = categories;
+            res.render('quizzes/edit', {
+                quiz: quiz,
+                categories: categories
+            });
+        } else {
+            throw new Error("Error loading Categories");
+        }
+    }).catch(function(error) {
+        next(error);
+    });
 };
 exports.destroy = function(req, res, next) {
     req.quiz.destroy().then(function() {

@@ -6,6 +6,7 @@ var path = require("path");
 //     DATABASE_STORAGE = quiz.sqlite
 // Usar BBDD Postgres:
 //     DATABASE_URL = postgres: //user:passwd@host:port/database
+
 var url = process.env.DATABASE_URL.match(/(.*)\:\/\/(.*?)\:(.*)@(.*)\:(.*)\/(.*)/);
 
 var DATABASE_PROTOCOL = url[1];
@@ -21,7 +22,7 @@ var DATABASE_STORAGE = process.env.DATABASE_URL;
 
 
 
-
+//./node_modules/.bin/sequelize seed:create --name FillCategorysTable --url sqlite:///quiz.sqlite
 
 var Sequelize = require("sequelize");
 
@@ -34,10 +35,31 @@ var sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, {
     omitNULL: true
 });
 
-//var sequelize = new Sequelize(null, null, null, {dialect: "sqlite",storage: "quiz.sqlite"});
+// var sequelize = new Sequelize(null, null, null, {
+//     dialect: "sqlite",
+//     storage: "quiz.sqlite"
+// });
 
 
 var Quiz = sequelize.import(path.join(__dirname, "quiz"));
+
+var Comment = sequelize.import(path.join(__dirname, "comment"));
+
+var Category = sequelize.import(path.join(__dirname, "category"));
+
+var User = sequelize.import(path.join(__dirname, "user"));
+
+
+Comment.belongsTo(Quiz);
+Quiz.hasMany(Comment);
+
+// Quiz.belongsToMany(Category, {
+//     through: 'QuizCategories'
+// });
+// Category.belongsToMany(Quiz, {
+//     through: 'QuizCategories'
+// });
+
 
 // sequelize.sync().then(function() {
 //     return Quiz.count().then(function(c) {
@@ -59,3 +81,6 @@ var Quiz = sequelize.import(path.join(__dirname, "quiz"));
 // });
 
 exports.Quiz = Quiz;
+exports.Comment = Comment;
+exports.Category = Category;
+exports.User = User;

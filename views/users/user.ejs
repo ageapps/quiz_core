@@ -1,0 +1,19 @@
+<div class="container">
+    <h1>Quiz the Question Game</h1>
+</div>
+
+<div class="container">
+    <h3>Username: <%= user.username%></h3>
+    <h3>Is Administrator: <%= user.isAdmin ? "Yes" : "No"%></h3>
+</div>
+
+<div class="container">
+    <div class="panel panel-body">
+        <a type="button" class="btn btn-primary" href="/users/<%=user.id %>/edit">
+            Edit <span class="glyphicon glyphicon-pencil"></span></a>
+    </div>
+    <div class="panel panel-body">
+        <a type="button" class="btn btn-primary" href="/users/<%= user.id %>?_method=DELETE" onClick="return confirm('Delete User: <%= user.username %>')">
+            Delete <span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+</div>

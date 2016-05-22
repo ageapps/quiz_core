@@ -31,7 +31,10 @@ app.use(session({
 }));
 
 app.use(methodOverRide('_method', {methods:["POST","GET"]}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
+
+//  (web).../assets  == /bower_components (server)
+app.use('/assets',  express.static(__dirname + '/bower_components'));
 app.use(partials());
 app.use(flash());
 app.use('/', routes);

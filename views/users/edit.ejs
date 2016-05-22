@@ -1,0 +1,6 @@
+<div class="container">
+    <h1>Edit User</h1>
+    <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT" >
+        <% include _form.ejs %>
+    </form>
+</div>
