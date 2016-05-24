@@ -154,12 +154,21 @@ exports.edit = function(req, res, next) {
 };
 exports.destroy = function(req, res, next) {
     req.user.destroy().then(function() {
+        if (req.session.user && req.session.user.id == req.user.id) {
+            delete req.session.user;
+        }
+        models.Quiz.findAll({
+            where: {
+                AuthorId: req.user.id
+            }
+        }).then(function(quizzes) {
+            quizzes.forEach(function(quiz) {
+                var question = quiz.question;
+                quiz.destroy();
+            });
+        });
 
-if(req.session.user && req.session.user.id == req.user.id){
-  delete req.session.user;
-}
-
-        req.flash("success", "User deleted succesfully . ");
+        req.flash("success", "User deleted succesfully. His questions where also deleted ");
         res.redirect("/");
     }).catch(function(error) {
         req.flash("error", "Errors while deleting User: " + error.message);

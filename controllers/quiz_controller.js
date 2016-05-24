@@ -22,16 +22,70 @@ exports.load = function(req, res, next, quizId) {
     });
 }
 
+// keeps track of the users in order to each quiz
+var users = [];
+
+// counts the number of quizzes
+var counter = 0;
+
+
+
+function renderIndex(res, quizzes, text) {
+    var array = [];
+    var quizzesSize = quizzes.length;
+    var lastUser = quizzes[quizzesSize - 1];
+    console.log("Numero de Quizzes: " + quizzesSize);
+    console.log("------------------ID-------------------");
+    quizzes.forEach(function(quiz) {
+        var id = quiz.AuthorId;
+        array.push(id);
+        console.log("ARRAY: " + id + " -> " + array.length);
+    });
+    console.log("------------------GETUSERS-------------------");
+    getUsers(res, quizzes, array, text);
+
+}
+
+
+function getUsers(res, quizzes, ids, text) {
+    console.log("CONTADOR: " + counter);
+    if (counter >= quizzes.length) {
+        console.log("FINISHED");
+        renderUsers(res, quizzes, text);
+        return
+    } else {
+        models.User.findById(ids[counter]).then(function(user) {
+            users.push(user);
+            console.log("USERS: " + user.id + " -> " + users.length);
+            counter++;
+            getUsers(res, quizzes, ids, text);
+        });
+    }
+}
+
+function renderUsers(res, quizzes, text) {
+    res.render('quizzes/index', {
+        quizzes: quizzes,
+        indexTitle: "Look for a quiz",
+        authors: users,
+        search: text
+    });
+    // = 0, so we scan the table every time we acces 
+    counter = 0;
+    users = [];
+}
+
+
 
 exports.index = function(req, res, next) {
+
     models.Quiz.findAll().then(function(quizzes) {
         if (req.params.format == "json") {
             res.json(quizzes);
         } else {
-            res.render('quizzes/index', {
-                quizzes: quizzes,
-                indexTitle: "Look for a quiz"
-            });
+            // all quizzes
+            var search = "";
+            renderIndex(res, quizzes, search);
         }
     }).catch(function(error) {
         next(error);
@@ -73,10 +127,9 @@ exports.search = function(req, res, next) {
             }
         }
     }).then(function(quizzes) {
-        res.render('quizzes/index', {
-            quizzes: quizzes,
-            indexTitle: "Quizzes found"
-        });
+
+        renderIndex(res, quizzes, text);
+
     }).catch(function(error) {
         next(error);
     });
@@ -98,14 +151,18 @@ exports.new = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
+
+
+    var authorId = req.session.user && req.session.user.id || 1;
     var quiz = models.Quiz.build({
         question: req.body.quiz.question,
         answer: req.body.quiz.answer,
-        category: req.body.quiz.category
+        category: req.body.quiz.category,
+        AuthorId: authorId
     });
 
     quiz.save({
-        fields: ["question", "answer", "category"]
+        fields: ["question", "answer", "category", "AuthorId"]
     }).then(function(quiz) {
         req.flash("success", "Quiz succesfully created");
         res.redirect("/quizzes");
