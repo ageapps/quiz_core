@@ -2,12 +2,6 @@
 
 var crypto = require('crypto');
 
-
-function encryptPassword(password, salt) {
-    return crypto.createHmac('sha1', salt).update(password).digest('hex');
-};
-
-
 module.exports = {
   up: function (queryInterface, Sequelize) {
 
@@ -28,4 +22,8 @@ module.exports = {
   down: function (queryInterface, Sequelize) {
       return queryInterface.bulkDelete('Users', null, {});
   }
+};
+
+function encryptPassword(password, salt) {
+    return crypto.createHmac('sha1', salt).update(password).digest('hex');
 };

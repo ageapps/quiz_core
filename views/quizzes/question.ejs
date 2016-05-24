@@ -25,11 +25,13 @@
             </li>
             <% }  %>
     </ul>
+
+    <% if (session.user ){%>
     <div class="text-center">
         <button type="button" class="btn btn-primary" data-target="#comment" data-toggle="modal">
             Add a comment <span class="glyphicon glyphicon-comment"></span></button>
     </div>
-
+    <% } %>
 </div>
 
 

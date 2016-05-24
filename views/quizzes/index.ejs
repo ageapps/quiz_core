@@ -8,7 +8,7 @@
             <h2><%= indexTitle %></h2>
             <form role="form" method="get" action="/quizzes/search" id="custom-search-input">
                 <div class="input-group col-md-12">
-                    <input type="text" class="form-control input-lg" placeholder="Search" name="search" id="search" value="<%= search %>"/>
+                    <input type="text" class="form-control input-lg" placeholder="Search" name="search" id="search" value="<%= search %>" />
                     <span class="input-group-btn">
                     <button class="btn btn-primary btn-lg" type="submit">
                         <i class="glyphicon glyphicon-search"></i>
@@ -28,10 +28,12 @@
                 <tr>
                     <th>#</th>
                     <th>Quiz</th>
-                    <th></th>
-                    <th></th>
-                    <th>Category</th>
-                    <th>Author</th>
+                    <% if (session.user ){%>
+                        <th></th>
+                        <th></th>
+                        <% } %>
+                            <th>Category</th>
+                            <th>Author</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,18 +49,22 @@
                             </a>
                             </span>
                         </td>
-                        <td>
-                            <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
-                        </td>
-                        <td>
-                            <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
-                        </td>
-                        <td>
-                            <%= quizzes[i].category %>
-                        </td>
-                        <td>
-                            <%= authors[i].username %>
-                        </td>
+                        <% if (session.user ){%>
+                            <td>
+                                <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
+                            </td>
+                            <td>
+                                <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
+                            </td>
+                            <% } %>
+                                <td>
+                                    <%= quizzes[i].category %>
+                                </td>
+                                <td>
+                                    <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= authors[i].id %>">
+                                        <%= authors[i].username %>
+                                    </a>
+                                </td>
                     </tr>
                     <% } %>
             </tbody>
@@ -66,8 +72,10 @@
         <% } else{ %>
             <h3>No quiz was found</h3>
             <% } %>
-                <div class="text-center">
-                    <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
-                </div>
+                <% if (session.user ){%>
+                    <div class="text-center">
+                        <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
+                    </div>
+                    <% } %>
 
 </div>

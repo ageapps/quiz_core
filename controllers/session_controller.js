@@ -47,6 +47,15 @@ exports.destroy = function(req, res, next) {
     res.redirect("/session");
 
 };
+
+exports.loginRequired = function(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect("session?redir=" + (req.param("redir") || req.url));
+    }
+};
+
 var authenticate = function(username, password) {
 
     return models.User.findOne({
@@ -55,8 +64,8 @@ var authenticate = function(username, password) {
         }
     }).then(function(user) {
         if (user && user.verifyPassword(password)) {
-          console.log("USERNAME: " + user.username);
-          console.log("PASSWORD: " + user.password);
+            console.log("USERNAME: " + user.username);
+            console.log("PASSWORD: " + user.password);
             return user;
         } else {
             return null;
