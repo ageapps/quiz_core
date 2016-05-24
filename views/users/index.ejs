@@ -49,10 +49,15 @@
 
                         <% if (session.user ){%>
                             <td>
-                                <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/users/<%= users[i].id %>/edit"></a>
+                                <% if(session.user.isAdmin || session.user.id === users[i].id ){%>
+                                    <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/users/<%= users[i].id %>/edit"></a>
+                                    <% } %>
                             </td>
                             <td>
-                                <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"></a>
+                                <% if(session.user.isAdmin && session.user.id !== users[i].id ){%>
+
+                                    <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"></a>
+                                    <% } %>
                             </td>
                             <% } %>
                     </tr>

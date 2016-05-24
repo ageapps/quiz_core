@@ -3,7 +3,15 @@ module.exports = function(sequelize, DataTypes) {
         text: {
             type: DataTypes.STRING,
             validate: {
-                notEmpty: {msg: "Comment is missing"}}
+                notEmpty: {
+                    msg: "Comment is missing"
+                }
+            }
+        },
+        accepted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     });
 };
+// ./node_modules/.bin/sequelize migration:create --name AddAcceptedToCommentsTable --url sqlite://$(pwd)/quiz.sqlite

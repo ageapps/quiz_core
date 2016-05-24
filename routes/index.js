@@ -24,6 +24,8 @@ router.get('/creditos', function(req, res, next) {
 // autoload parameters
 router.param("quizId", quizController.load);
 router.param("userId", userController.load);
+router.param("commentId", commentController.load);
+
 
 
 // quiz_controller routes
@@ -33,12 +35,13 @@ router.get("/quizzes/:quizId(\\d+).:format?", quizController.question);
 router.get("/quizzes/:quizId(\\d+)/check", quizController.check);
 router.get("/quizzes/new", sessionController.loginRequired, quizController.new);
 router.post("/quizzes", sessionController.loginRequired, quizController.create);
-router.get("/quizzes/:quizId(\\d+)/edit", sessionController.loginRequired, quizController.edit);
-router.put("/quizzes/:quizId(\\d+)", sessionController.loginRequired, quizController.update);
-router.delete("/quizzes/:quizId(\\d+)", sessionController.loginRequired, quizController.destroy);
+router.get("/quizzes/:quizId(\\d+)/edit", sessionController.loginRequired, quizController.ownershipRequired, quizController.edit);
+router.put("/quizzes/:quizId(\\d+)", sessionController.loginRequired, quizController.ownershipRequired, quizController.update);
+router.delete("/quizzes/:quizId(\\d+)", sessionController.loginRequired, quizController.ownershipRequired, quizController.destroy);
 
-
+// comment_controller routes
 router.post("/quizzes/:quizId(\\d+)/comments", sessionController.loginRequired, commentController.create);
+router.put("/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)/accept", sessionController.loginRequired, quizController.ownershipRequired, commentController.accept);
 
 // user_controller routes
 router.get('/users.:format?', userController.index);
@@ -46,12 +49,11 @@ router.get("/users/search", userController.search);
 router.get('/users/:userId(\\d+).:format?', userController.user);
 router.get('/users/new', userController.new);
 router.post('/users', userController.create);
-router.get('/users/:userId(\\d+)/edit', userController.edit);
-router.put('/users/:userId(\\d+)', userController.update);
-router.delete('/users/:userId(\\d+)', userController.destroy);
+router.get('/users/:userId(\\d+)/edit',sessionController.loginRequired, userController.adminOrMyselfRequired, userController.edit);
+router.put('/users/:userId(\\d+)', sessionController.loginRequired,userController.adminOrMyselfRequired, userController.update);
+router.delete('/users/:userId(\\d+)', sessionController.loginRequired,userController.adminAndNotMyselfRequired, userController.destroy);
 
 // session_controller routes
-
 router.get('/session', sessionController.new);
 router.post('/session', sessionController.create);
 router.delete('/session', sessionController.destroy);

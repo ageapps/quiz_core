@@ -70,7 +70,7 @@ function renderUsers(res, quizzes, text) {
         authors: users,
         search: text
     });
-    // = 0, so we scan the table every time we acces 
+    // = 0, so we scan the table every time we acces
     counter = 0;
     users = [];
 }
@@ -248,3 +248,20 @@ exports.destroy = function(req, res, next) {
         next(error);
     });
 };
+
+exports.ownershipRequired = function(req, res, next, quizId) {
+
+    var isAdmin = req.session.user.isAdmin;
+    var quizAuthorId = req.quiz.AuthorId;
+    var loggedUserId = req.session.user.id;
+
+    if (isAdmin || quizAuthorId === loggedUserId) {
+        next();
+    } else {
+        console.log("Denied operation. The logged User is not the owner or Administrator");
+        res.send(403);
+    }
+
+
+
+}

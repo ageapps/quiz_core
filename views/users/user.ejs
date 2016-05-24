@@ -7,16 +7,19 @@
     <h3>Is Administrator: <%= user.isAdmin ? "Yes" : "No"%></h3>
 </div>
 
-<% if (session.user ){%>
+<% if (session.user){ %>
     <div class="container">
-        <div class="panel panel-body">
-            <a type="button" class="btn btn-primary" href="/users/<%=user.id %>/edit">
+        <% if(session.user.isAdmin || session.user.id === user.id ){%>
+            <div class="panel panel-body">
+                <a type="button" class="btn btn-primary" href="/users/<%=user.id %>/edit">
             Edit <span class="glyphicon glyphicon-pencil"></span></a>
-        </div>
-        <div class="panel panel-body">
-            <a type="button" class="btn btn-primary" href="/users/<%= user.id %>?_method=DELETE" onClick="return confirm('Delete User: <%= user.username %>')">
+            </div>
+            <% } %>
+                <% if (session.user.isAdmin && session.user.id !== user.id ){%>
+                    <div class="panel panel-body">
+                        <a type="button" class="btn btn-primary" href="/users/<%= user.id %>?_method=DELETE" onClick="return confirm('Delete User: <%= user.username %>')">
             Delete <span class="glyphicon glyphicon-trash"></span></a>
-        </div>
+                    </div>
+                    <% } %>
     </div>
-
     <% } %>

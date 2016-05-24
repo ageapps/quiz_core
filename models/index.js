@@ -63,26 +63,6 @@ Quiz.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 //     through: 'QuizCategories'
 // });
 
-
-// sequelize.sync().then(function() {
-//     return Quiz.count().then(function(c) {
-//         if (c === 0) {
-//             return Quiz.bulkCreate([{
-//                 question: "Capital de Italia",
-//                 answer: "Roma"
-//             }, {
-//                 question: "Capital de Portugal",
-//                 answer: "Lisboa"
-//             }]).then(function() {
-//                 console.log("Base de datos inicialzada con datos");
-//             });
-//         }
-//     });
-// }).catch(function(error) {
-//     console.log("Error Sincronizando las tablas de la BD", error);
-//     progress.exit(1);
-// });
-
 exports.Quiz = Quiz;
 exports.Comment = Comment;
 exports.Category = Category;

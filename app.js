@@ -9,7 +9,7 @@ var session = require('express-session');
 var flash = require('express-flash');
 var methodOverRide = require('method-override');
 var routes = require('./routes/index');
-
+var url = require('url');
 var app = express();
 
 // view engine setup
@@ -71,6 +71,16 @@ if (app.get('env') === 'development') {
         });
     });
 }
+if (app.get('env') === 'production') {
+    app.use(function(err, req, res, next) {
+        if (req.headers["x-forwarded-proto"] !== "https") {
+            res.redirect("https://" + req.get("Host") + req.url);
+        } else {
+            next;
+        }
+    });
+}
+
 
 // production error handler
 // no stacktraces leaked to user

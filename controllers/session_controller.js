@@ -23,15 +23,13 @@ exports.create = function(req, res, next) {
     var user_name = req.body.username;
     var password = req.body.password;
 
-    console.log("USERNAME: " + user_name);
-    console.log("PASSWORD: " + password);
-
     authenticate(user_name, password).then(function(user) {
 
         if (user) {
             req.session.user = {
                 id: user.id,
-                username: user.username
+                username: user.username,
+                isAdmin: user.isAdmin
             };
             res.redirect(redir);
         } else {
@@ -52,7 +50,7 @@ exports.loginRequired = function(req, res, next) {
     if (req.session.user) {
         next();
     } else {
-        res.redirect("session?redir=" + (req.param("redir") || req.url));
+        res.redirect("/session?redir=" + (req.param("redir") || req.url));
     }
 };
 
