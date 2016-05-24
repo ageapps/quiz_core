@@ -3,6 +3,8 @@ var router = express.Router();
 var quizController = require('../controllers/quiz_controller');
 var commentController = require('../controllers/comment_controller');
 var userController = require('../controllers/user_controller');
+var sessionController = require('../controllers/session_controller');
+
 
 
 /* GET home page. */
@@ -19,11 +21,12 @@ router.get('/creditos', function(req, res, next) {
     });
 });
 
+// autoload parameters
 router.param("quizId", quizController.load);
 router.param("userId", userController.load);
 
 
-
+// quiz_controller routes
 router.get("/quizzes.:format?", quizController.index);
 router.get("/quizzes/search", quizController.search);
 router.get("/quizzes/:quizId(\\d+).:format?", quizController.question);
@@ -33,10 +36,9 @@ router.post("/quizzes", quizController.create);
 router.get("/quizzes/:quizId(\\d+)/edit", quizController.edit);
 router.put("/quizzes/:quizId(\\d+)", quizController.update);
 router.delete("/quizzes/:quizId(\\d+)", quizController.destroy);
-
 router.post("/quizzes/:quizId(\\d+)/comments", commentController.create);
 
-
+// user_controller routes
 router.get('/users.:format?', userController.index);
 router.get("/users/search", userController.search);
 router.get('/users/:userId(\\d+).:format?', userController.user);
@@ -45,5 +47,13 @@ router.post('/users', userController.create);
 router.get('/users/:userId(\\d+)/edit', userController.edit);
 router.put('/users/:userId(\\d+)', userController.update);
 router.delete('/users/:userId(\\d+)', userController.destroy);
+
+// session_controller routes
+
+router.get('/session', sessionController.new);
+router.post('/session', sessionController.create);
+router.delete('/session', sessionController.destroy);
+
+
 
 module.exports = router;

@@ -30,13 +30,25 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(methodOverRide('_method', {methods:["POST","GET"]}));
+app.use(methodOverRide('_method', {
+    methods: ["POST", "GET"]
+}));
 app.use(express.static(path.join(__dirname, '/public')));
 
 //  (web).../assets  == /bower_components (server)
-app.use('/assets',  express.static(__dirname + '/bower_components'));
+app.use('/assets', express.static(__dirname + '/bower_components'));
 app.use(partials());
 app.use(flash());
+
+app.use(function(req, res, next) {
+
+    // req.session avaliable in views
+    res.locals.session = req.session;
+    res.locals.url = req.url;
+
+    next();
+});
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler

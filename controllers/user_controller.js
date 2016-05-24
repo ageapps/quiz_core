@@ -80,7 +80,7 @@ exports.create = function(req, res, next) {
         })
         .then(function(existing_user) {
             if (existing_user) {
-                var msg = "El usuario \"" + req.body.user.username + "\" allready exists."
+                var msg = "The user \"" + req.body.user.username + "\" allready exists."
                 req.flash('error', msg);
                 res.render('users/new', {
                     user: user
@@ -91,7 +91,7 @@ exports.create = function(req, res, next) {
                     })
                     .then(function(user) {
                         req.flash('success', 'User created succesfully');
-                        res.redirect('/users');
+                        res.redirect('/session');
                     })
                     .catch(Sequelize.ValidationError, function(error) {
                         req.flash('error', 'Errors in form:');
@@ -154,8 +154,13 @@ exports.edit = function(req, res, next) {
 };
 exports.destroy = function(req, res, next) {
     req.user.destroy().then(function() {
+
+if(req.session.user && req.session.user.id == req.user.id){
+  delete req.session.user;
+}
+
         req.flash("success", "User deleted succesfully . ");
-        res.redirect("/users");
+        res.redirect("/");
     }).catch(function(error) {
         req.flash("error", "Errors while deleting User: " + error.message);
         next(error);
