@@ -59,7 +59,6 @@ exports.index = function(req, res, next) {
             res.json(quizzes);
         } else {
             // all quizzes
-            console.log("RENDER  -------------------------------");
             var search = "";
             res.render('quizzes/index', {
                 quizzes: quizzes,

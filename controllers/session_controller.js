@@ -62,8 +62,6 @@ var authenticate = function(username, password) {
         }
     }).then(function(user) {
         if (user && user.verifyPassword(password)) {
-            console.log("USERNAME: " + user.username);
-            console.log("PASSWORD: " + user.password);
             return user;
         } else {
             return null;
