@@ -8,20 +8,24 @@
     <input type="text" class="form-control" name="quiz[answer]" placeholder="Your Answer" value="<%= quiz.answer %>">
 </fieldset>
 <fieldset class="form-group">
-    <select class="selectpicker" data-live-search="true" data-style="btn-primary" name="quiz[category]" form="quiz_form">
+    <select class="selectpicker" data-live-search="true" data-style="btn-primary" name="quiz[category]" form="quiz_form" multiple>
         <% if (quiz.category){ %>
-        <option selected="true">
-             <%=   quiz.category%>
+            <option selected="true">
+                <%=   quiz.category%>
             </option>
             <option data-divider="true"></option>
             <% } %>
                 <% for (var i in categories){ %>
                     <% if (quiz.category == categories[i].text ) {continue;} %>
-                        <option value="<%= categories[i].text%>">
+                        <option value="<%= categories[i].id%>">
                             <%= categories[i].text%>
                         </option>
                         <% } %>
     </select>
+</fieldset>
+<fieldset class="form-group">
+    <label for="img">Image</label>
+    <input type="file" class="form-control" id="img" name="image" accept="image/*" %>">
 </fieldset>
 <button type="submit" class="btn btn-primary">Submit</button>
 <button type="reset" class="btn btn-primary">Reset</button>

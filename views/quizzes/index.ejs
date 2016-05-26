@@ -27,6 +27,7 @@
             <thead class="thead-default">
                 <tr>
                     <th>#</th>
+                      <th>Images</th>
                     <th>Quiz</th>
                     <% if (session.user ){%>
                         <th></th>
@@ -42,6 +43,13 @@
                         <th scope="row">
                             <%=  (+i+1) %>
                         </th>
+                        <td>
+                            <% if (quizzes[i].Attachment) { %>
+                                <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
+                                <% } else { %>
+                                    <img src="/images/question.jpg" width="50px" />
+                                    <% } %>
+                        </td>
                         <td>
                             <span>
                             <a href="/quizzes/<%= quizzes[i].id %>">
@@ -62,11 +70,14 @@
                             </td>
                             <% } %>
                                 <td>
-                                    <%= quizzes[i].category %>
+                                    <% var categories = quizzes[i].QuizCategories;%>
+                                        <% for (var j in categories){  %>
+                                            <%= categories[j].text %>
+                                                <% } %>
                                 </td>
                                 <td>
-                                    <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= authors[i].id %>">
-                                        <%= authors[i].username %>
+                                    <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
+                                        <%= quizzes[i].Author.username %>
                                     </a>
                                 </td>
                     </tr>

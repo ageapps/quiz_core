@@ -49,21 +49,43 @@ var Category = sequelize.import(path.join(__dirname, "category"));
 
 var User = sequelize.import(path.join(__dirname, "user"));
 
+var Attachment = sequelize.import(path.join(__dirname, "attachment"));
 
+
+// User - Comment - Quizz relations 1:1:1
 Comment.belongsTo(Quiz);
 Quiz.hasMany(Comment);
+Comment.belongsTo(User, {
+    as: 'Author',
+    foreignKey: 'AuthorId'
+});
 
-User.hasMany(Quiz, {foreignKey: 'AuthorId'});
-Quiz.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
+// User - Quizz relations 1:N
+User.hasMany(Quiz, {
+    foreignKey: 'AuthorId'
+});
+Quiz.belongsTo(User, {
+    as: 'Author',
+    foreignKey: 'AuthorId'
+});
 
-// Quiz.belongsToMany(Category, {
-//     through: 'QuizCategories'
-// });
-// Category.belongsToMany(Quiz, {
-//     through: 'QuizCategories'
-// });
+// Category - Quizz relations N:M 
+Quiz.belongsToMany(Category, {
+    through: 'QuizCategories',
+    as: "QuizCategories"
+});
+Category.belongsToMany(Quiz, {
+    through: 'QuizCategories',
+    as: "QuizesInCategories"
+});
+
+// Attachment - Quizz relations 1:1
+Attachment.belongsTo(Quiz);
+Quiz.hasOne(Attachment);
+
 
 exports.Quiz = Quiz;
 exports.Comment = Comment;
 exports.Category = Category;
 exports.User = User;
+exports.Attachment = Attachment;

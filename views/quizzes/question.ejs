@@ -4,7 +4,12 @@
     <form role="form" method="get" action="/quizzes/<%= quiz.id %>/check">
         <div class="form-group">
             <label for="answer">
-                <%= quiz.question %>
+                <% if (quiz.Attachment) { %>
+                    <img src="<%= quiz.Attachment.url %>" />
+                    <% } else { %>
+                        <img src="/images/question.jpg" width="50px" />
+                        <% } %>
+                            <%= quiz.question %>
             </label>
             <input type="text" class="form-control" name="answer" id="answer" value="<%= answer %>" placeholder="Responde aquí">
         </div>
@@ -23,14 +28,26 @@
            var comment = quiz.Comments[i];
            if(comment.accepted){ %>
             <li>
-                <%= comment.text %>
+                <p>
+                    <%= comment.text %> (by
+                        <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
+                            <%= comment.Author.username %>
+                        </a> )
+                </p>
             </li>
             <% } else if(session.user && (session.user.isAdmin || session.user.id === quiz.AuthorId )){ %>
                 <li>
-                    <%= comment.text %>
+                    <p>
+                        <%= comment.text %> (by
+                            <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
+                                <%= comment.Author.username %>
+                            </a> )
+                    </p>
+                    <p>
                         <a class="btn btn-primary" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>/accept?_method=PUT">
-              Accept
-            </a>
+                          Accept
+                          </a>
+                    </p>
                 </li>
                 <% }  %>
                     <% }  %>

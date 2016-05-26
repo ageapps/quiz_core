@@ -15,21 +15,18 @@ module.exports = {
         return queryInterface.bulkInsert('Quizzes', [{
             question: 'Capital de Italia',
             answer: "Roma",
-            category: "Geography",
             createdAt: new Date(),
             updatedAt: new Date(),
             AuthorId: 1
         }, {
             question: 'Capital de Portugal',
             answer: "Lisboa",
-            category: "Geography",
             createdAt: new Date(),
             updatedAt: new Date(),
             AuthorId: 1
         }, {
             question: 'Capital de España',
             answer: "Madrid",
-            category: "Geography",
             createdAt: new Date(),
             updatedAt: new Date(),
             AuthorId: 1

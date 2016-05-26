@@ -3,13 +3,32 @@
  */
 var models = require('../models');
 var Sequelize = require('sequelize');
+var cloudinary = require('cloudinary');
+var fs = require('fs');
 
+
+var cloudinary_image_options = {
+    crop: "limit",
+    with: 200,
+    height: 200,
+    radius: 5,
+    border: "3px_solid_blue",
+    tags: ["core", "quiz-2016"]
+};
 
 
 exports.load = function(req, res, next, quizId) {
     // find quizz
     models.Quiz.findById(quizId, {
-        include: [models.Comment]
+        include: [{
+            model: models.Comment,
+            include: [{
+                model: models.User,
+                as: "Author"
+            }]
+        }, {
+            model: models.Attachment
+        }]
     }).then(function(quiz) {
         if (quiz) {
             req.quiz = quiz;
@@ -22,70 +41,31 @@ exports.load = function(req, res, next, quizId) {
     });
 }
 
-// keeps track of the users in order to each quiz
-var users = [];
-
-// counts the number of quizzes
-var counter = 0;
-
-
-
-function renderIndex(res, quizzes, text) {
-    var array = [];
-    var quizzesSize = quizzes.length;
-    var lastUser = quizzes[quizzesSize - 1];
-    console.log("Numero de Quizzes: " + quizzesSize);
-    console.log("------------------ID-------------------");
-    quizzes.forEach(function(quiz) {
-        var id = quiz.AuthorId;
-        array.push(id);
-        console.log("ARRAY: " + id + " -> " + array.length);
-    });
-    console.log("------------------GETUSERS-------------------");
-    getUsers(res, quizzes, array, text);
-
-}
-
-
-function getUsers(res, quizzes, ids, text) {
-    console.log("CONTADOR: " + counter);
-    if (counter >= quizzes.length) {
-        console.log("FINISHED");
-        renderUsers(res, quizzes, text);
-        return
-    } else {
-        models.User.findById(ids[counter]).then(function(user) {
-            users.push(user);
-            console.log("USERS: " + user.id + " -> " + users.length);
-            counter++;
-            getUsers(res, quizzes, ids, text);
-        });
-    }
-}
-
-function renderUsers(res, quizzes, text) {
-    res.render('quizzes/index', {
-        quizzes: quizzes,
-        indexTitle: "Look for a quiz",
-        authors: users,
-        search: text
-    });
-    // = 0, so we scan the table every time we acces
-    counter = 0;
-    users = [];
-}
-
-
 
 exports.index = function(req, res, next) {
 
-    models.Quiz.findAll().then(function(quizzes) {
+    models.Quiz.findAll({
+        include: [{
+            model: models.User,
+            as: 'Author'
+        }, {
+            model: models.Category,
+            as: 'QuizCategories'
+        }, {
+            model: models.Attachment
+        }]
+    }).then(function(quizzes) {
         if (req.params.format == "json") {
             res.json(quizzes);
         } else {
             // all quizzes
+            console.log("RENDER  -------------------------------");
             var search = "";
-            renderIndex(res, quizzes, search);
+            res.render('quizzes/index', {
+                quizzes: quizzes,
+                indexTitle: "Look for a quiz",
+                search: search
+            });
         }
     }).catch(function(error) {
         next(error);
@@ -121,14 +101,21 @@ exports.check = function(req, res, next) {
 exports.search = function(req, res, next) {
     var text = req.query.search || "";
     models.Quiz.findAll({
+        include: [{
+            model: models.User,
+            as: 'Author'
+        }],
         where: {
             question: {
                 $like: "%" + text + "%"
             }
         }
     }).then(function(quizzes) {
-
-        renderIndex(res, quizzes, text);
+        res.render('quizzes/index', {
+            quizzes: quizzes,
+            indexTitle: "Look for a quiz",
+            search: text
+        });
 
     }).catch(function(error) {
         next(error);
@@ -157,15 +144,35 @@ exports.create = function(req, res, next) {
     var quiz = models.Quiz.build({
         question: req.body.quiz.question,
         answer: req.body.quiz.answer,
-        category: req.body.quiz.category,
         AuthorId: authorId
     });
 
-    quiz.save({
-        fields: ["question", "answer", "category", "AuthorId"]
-    }).then(function(quiz) {
-        req.flash("success", "Quiz succesfully created");
-        res.redirect("/quizzes");
+    // quiz.save({
+    //     fields: ["question", "answer", "AuthorId"]
+    // }).then(function(quiz) {
+    models.Quiz.create(quiz).then(function(quiz) {
+        // get Categories and save them to quiz
+        models.Category.findAll({
+            where: {
+                id: req.body.quiz.category
+            }
+        }).then(function(categories) {
+            quiz.addQuizCategories(categories).then(function() {
+                if (!req.file) {
+                    req.flash('info', 'Quiz without Image.');
+                    return;
+                }
+                // Save Image in Cloudinary
+                return uploadResourceToCloudinary(req).then(function(uploadResult) {
+                    // Create new Attachment in DB.
+                    return createAttachment(req, uploadResult, quiz).then(function() {
+                        console.log("categories saved succesfully");
+                        req.flash("success", "Quiz succesfully created");
+                        res.redirect("/quizzes");
+                    });
+                });
+            });
+        });
     }).catch(Sequelize.ValidationError, function(error) {
 
         req.flash("error", "Errors in form ");
@@ -190,13 +197,38 @@ exports.create = function(req, res, next) {
 exports.update = function(req, res, next) {
     req.quiz.question = req.body.quiz.question;
     req.quiz.answer = req.body.quiz.answer;
-    req.quiz.category = req.body.quiz.category;
 
     req.quiz.save({
-        fields: ["question", "answer", "category"]
+        fields: ["question", "answer"]
     }).then(function(quiz) {
-        req.flash("success", "Quiz succesfully edited");
-        res.redirect("/quizzes");
+
+        // get Categories and save them to quiz
+        models.Category.findAll({
+            where: {
+                id: req.body.quiz.category
+            }
+        }).then(function(categories) {
+            quiz.setQuizCategories(categories).then(function() {
+                // Sin imagen: Eliminar attachment e imagen viejos.
+                if (!req.file) {
+                    req.flash('info', 'Quiz without Image.');
+                    if (quiz.Attachment) {
+                        cloudinary.api.delete_resources(quiz.Attachment.public_id);
+                        return quiz.Attachment.destroy();
+                    }
+                    return;
+                }
+                // Save Image in Cloudinary
+                return uploadResourceToCloudinary(req).then(function(uploadResult) {
+                    // Create new Attachment in DB.
+                    return createAttachment(req, uploadResult, quiz).then(function() {
+                        console.log("categories saved succesfully");
+                        req.flash("success", "Quiz succesfully edited");
+                        res.redirect("/quizzes");
+                    });
+                });
+            });
+        });
     }).catch(Sequelize.ValidationError, function(error) {
 
         req.flash("error", "Errors in form ");
@@ -240,6 +272,13 @@ exports.edit = function(req, res, next) {
     });
 };
 exports.destroy = function(req, res, next) {
+
+  // Delete image from Cloudinary
+  if (req.quiz.Attachment) {
+      cloudinary.api.delete_resources(req.quiz.Attachment.public_id);
+  }
+
+
     req.quiz.destroy().then(function() {
         req.flash("success", "Quizz succesfully deleted. ");
         res.redirect("/quizzes");
@@ -261,7 +300,57 @@ exports.ownershipRequired = function(req, res, next, quizId) {
         console.log("Denied operation. The logged User is not the owner or Administrator");
         res.send(403);
     }
+}
 
+function uploadResourceToCloudinary(req) {
+    return new Promise(function(resolve, reject) {
+        var path = req.file.path;
+        cloudinary.uploader.upload(path, function(result) {
+                fs.unlink(path); // delete the uploaded image from ./uploads
+                if (!result.error) {
+                    resolve({
+                        public_id: result.public_id,
+                        url: result.secure_url
+                    });
+                } else {
+                    req.flash('error', 'New image could not be stored: ' + result.error.message);
+                    resolve(null);
+                }
+            },
+            cloudinary_image_options
+        );
+    })
+}
 
+function updateAttachment(req, uploadResult, quiz) {
+    if (!uploadResult) {
+        return Promise.resolve();
+    }
 
+    // Recordar public_id de la imagen antigua.
+    var old_public_id = quiz.Attachment ? quiz.Attachment.public_id : null;
+
+    return quiz.getAttachment()
+        .then(function(attachment) {
+            if (!attachment) {
+                attachment = models.Attachment.build({
+                    QuizId: quiz.id
+                });
+            }
+            attachment.public_id = uploadResult.public_id;
+            attachment.url = uploadResult.url;
+            attachment.filename = req.file.originalname;
+            attachment.mime = req.file.mimetype;
+            return attachment.save();
+        })
+        .then(function(attachment) {
+            req.flash('success', 'Image uploaded succesfully.');
+            if (old_public_id) {
+                cloudinary.api.delete_resources(old_public_id);
+            }
+        })
+        .catch(function(error) { // Ignoro errores de validacion en imagenes
+            req.flash('error', 'Image could not be saved: ' + error.message);
+            cloudinary.api.delete_resources(uploadResult.public_id);
+        });
 }

@@ -34,14 +34,6 @@ heroku run ./node_modules/.bin/sequelize db:seed:all --url postgres://hcarthtolg
                     }
                 }
             },
-            category: {
-                type: Sequelize.STRING,
-                validate: {
-                    notEmpty: {
-                        msg: "Category is missing"
-                    }
-                }
-            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false
@@ -58,13 +50,6 @@ heroku run ./node_modules/.bin/sequelize db:seed:all --url postgres://hcarthtolg
     },
 
     down: function(queryInterface, Sequelize) {
-        /*
-          Add reverting commands here.
-          Return a promise to correctly handle asynchronicity.
-./node_modules/.bin/sequelize seed:create --name FillQuizzesTable --url sqlite:///quiz.sqlite
-          Example:
-          return queryInterface.dropTable('users');
-        */
         return queryInterface.dropTable('Quizzes');
     }
 };
