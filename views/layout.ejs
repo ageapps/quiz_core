@@ -12,12 +12,12 @@
 
     <section>
         <% if (messages.info){ %>
-            <div id="flashinfo" class="container">
-                <% for (var i in messages.success){ %>
+            <div class="container">
+                <% for (var i in messages.info){ %>
                     <div class="alert alert-warning" role="alert">
                         <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
                         <span class="sr-only">Info:</span>
-                        <%= messages.success[i] %>
+                        <%= messages.info[i] %>
                     </div>
                     <% } %>
             </div>

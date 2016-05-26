@@ -76,9 +76,11 @@
                                                 <% } %>
                                 </td>
                                 <td>
+                              <%     if(quizzes[i].Author){ %>
                                     <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
                                         <%= quizzes[i].Author.username %>
                                     </a>
+                                      <% } %>
                                 </td>
                     </tr>
                     <% } %>

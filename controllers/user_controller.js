@@ -3,7 +3,11 @@ var Sequelize = require('sequelize');
 
 exports.load = function(req, res, next, userId) {
 
-    models.User.findById(userId).then(function(user) {
+    models.User.findById(userId, {
+        include: [{
+            model: models.Quiz
+        }]
+    }).then(function(user) {
         if (user) {
             req.user = user;
             next();
@@ -177,26 +181,26 @@ exports.destroy = function(req, res, next) {
 };
 
 exports.adminOrMyselfRequired = function(req, res, next) {
-  var isAdmin = req.session.user.isAdmin;
-  var userId = req.user.id;
-  var loggedUserId = req.session.user.id;
-  if (isAdmin || userId === loggedUserId) {
-      next();
-  } else {
-      console.log("Denied access. The logged User is not the user or Administrator");
-      res.send(403);
-  }
+    var isAdmin = req.session.user.isAdmin;
+    var userId = req.user.id;
+    var loggedUserId = req.session.user.id;
+    if (isAdmin || userId === loggedUserId) {
+        next();
+    } else {
+        console.log("Denied access. The logged User is not the user or Administrator");
+        res.send(403);
+    }
 }
 
 exports.adminAndNotMyselfRequired = function(req, res, next) {
-  var isAdmin = req.session.user.isAdmin;
-  var userId = req.user.id;
-  var loggedUserId = req.session.user.id;
-  if (isAdmin || userId !== loggedUserId) {
-      next();
-  } else {
-      console.log("Denied access. The logged User is not the user or Administrator");
-      res.send(403);
-  }
+    var isAdmin = req.session.user.isAdmin;
+    var userId = req.user.id;
+    var loggedUserId = req.session.user.id;
+    if (isAdmin || userId !== loggedUserId) {
+        next();
+    } else {
+        console.log("Denied access. The logged User is not the user or Administrator");
+        res.send(403);
+    }
 
 }

@@ -41,6 +41,17 @@ exports.create = function(req, res, next) {
     });
 };
 
+exports.destroy = function(req, res, next) {
+
+    req.comment.destroy().then(function() {
+        req.flash("success", "Comment succesfully deleted. ");
+        res.redirect("/quizzes/" + req.params.quizId);
+    }).catch(function(error) {
+        req.flash("error", "Errors while deleting Comment: " + error.message);
+        next(error);
+    });
+};
+
 
 exports.accept = function(req, res, next) {
     req.comment.accepted = true;

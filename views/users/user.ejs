@@ -23,3 +23,70 @@
                     <% } %>
     </div>
     <% } %>
+
+        <% var quizzes = user.Quizzes;
+         if  (quizzes.length > 0){ %>
+            <div class="container">
+                <h3><%= ( session.user &&  (session.user.isAdmin || session.user.id === user.id )) ? "Your " : "His "%> Quizzes</h3>
+            </div>
+            <br/>
+            <div class="container">
+                <table class="table table-hover">
+                    <thead class="thead-default">
+                        <tr>
+                            <th>#</th>
+                            <th>Images</th>
+                            <th>Quiz</th>
+                            <% if (session.user ){%>
+                                <th></th>
+                                <th></th>
+                                <% } %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i in quizzes){ %>
+                            <tr>
+                                <th scope="row">
+                                    <%=  (+i+1) %>
+                                </th>
+                                <td>
+                                    <% if (quizzes[i].Attachment) { %>
+                                        <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
+                                        <% } else { %>
+                                            <img src="/images/question.jpg" width="50px" />
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <span>
+                                <a href="/quizzes/<%= quizzes[i].id %>">
+                                    <%= quizzes[i].question %>
+                                </a>
+                                </span>
+                                </td>
+                                <% if(session.user){ %>
+                                    <td>
+                                        <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                            <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
+                                            <% } %>
+                                    </td>
+                                    <td>
+                                        <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                            <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
+                                            <% } %>
+                                    </td>
+                                    <% } %>
+
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+            <% } else{ %>
+                <div class="container">
+                    <h3>No quiz was found from this user </h3>
+                </div>
+
+                <% } %>

@@ -33,6 +33,11 @@
                         <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
                             <%= comment.Author.username %>
                         </a> )
+
+                        <%  if (session.user &&  (session.user.isAdmin || session.user.id === quiz.AuthorId )){%>
+                            <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')"></a>
+                            <% } %>
+
                 </p>
             </li>
             <% } else if(session.user && (session.user.isAdmin || session.user.id === quiz.AuthorId )){ %>
@@ -47,6 +52,11 @@
                         <a class="btn btn-primary" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>/accept?_method=PUT">
                           Accept
                           </a>
+                    </p>
+                    <p>
+                        <a class="btn btn-primary" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')">
+                          Delete
+                        </a>
                     </p>
                 </li>
                 <% }  %>

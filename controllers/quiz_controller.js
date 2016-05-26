@@ -5,6 +5,7 @@ var models = require('../models');
 var Sequelize = require('sequelize');
 var cloudinary = require('cloudinary');
 var fs = require('fs');
+var Promise = require('promise');
 
 
 var cloudinary_image_options = {
@@ -62,7 +63,7 @@ exports.index = function(req, res, next) {
             var search = "";
             res.render('quizzes/index', {
                 quizzes: quizzes,
-                indexTitle: "Look for a quiz",
+                indexTitle: "Look for a Quizz",
                 search: search
             });
         }
@@ -99,6 +100,7 @@ exports.check = function(req, res, next) {
 
 exports.search = function(req, res, next) {
     var text = req.query.search || "";
+    var title = text ? "Quizzes Found" : "Look for a Quizz"
     models.Quiz.findAll({
         include: [{
             model: models.User,
@@ -110,12 +112,15 @@ exports.search = function(req, res, next) {
             }
         }
     }).then(function(quizzes) {
-        res.render('quizzes/index', {
-            quizzes: quizzes,
-            indexTitle: "Look for a quiz",
-            search: text
-        });
-
+        if (req.params.format == "json") {
+            res.json(quizzes);
+        } else {
+            res.render('quizzes/index', {
+                quizzes: quizzes,
+                indexTitle: title,
+                search: text
+            });
+        }
     }).catch(function(error) {
         next(error);
     });
@@ -146,31 +151,48 @@ exports.create = function(req, res, next) {
         AuthorId: authorId
     });
 
-    // quiz.save({
-    //     fields: ["question", "answer", "AuthorId"]
-    // }).then(function(quiz) {
-    models.Quiz.create(quiz).then(function(quiz) {
+    if (!req.file) {
+        req.flash('info', 'Quiz without Image.');
+    }
+    if (!req.body.quiz.category) {
+        req.flash("error", "Category missing");
+        models.Category.findAll().then(function(categories) {
+            res.render('quizzes/new', {
+                quiz: quiz,
+                categories: categories
+            });
+        });
+        return;
+    }
+
+    quiz.save({
+        fields: ["question", "answer", "AuthorId"]
+    }).then(function(quiz) {
         // get Categories and save them to quiz
         models.Category.findAll({
             where: {
                 id: req.body.quiz.category
             }
         }).then(function(categories) {
+
+
+            req.flash("success", "Quiz succesfully created");
             quiz.addQuizCategories(categories).then(function() {
                 if (!req.file) {
-                    req.flash('info', 'Quiz without Image.');
+                    // No file
                     return;
                 }
+
                 // Save Image in Cloudinary
                 return uploadResourceToCloudinary(req).then(function(uploadResult) {
                     // Create new Attachment in DB.
-                    return createAttachment(req, uploadResult, quiz).then(function() {
-                        console.log("categories saved succesfully");
-                        req.flash("success", "Quiz succesfully created");
-                        res.redirect("/quizzes");
-                    });
+                    return createAttachment(req, uploadResult, quiz);
                 });
             });
+
+
+        }).then(function() {
+            res.redirect("/quizzes");
         });
     }).catch(Sequelize.ValidationError, function(error) {
 
@@ -219,8 +241,8 @@ exports.update = function(req, res, next) {
                 }
                 // Save Image in Cloudinary
                 return uploadResourceToCloudinary(req).then(function(uploadResult) {
-                    // Create new Attachment in DB.
-                    return createAttachment(req, uploadResult, quiz).then(function() {
+                    // Update Attachment in DB.
+                    return updateAttachment(req, uploadResult, quiz).then(function() {
                         console.log("categories saved succesfully");
                         req.flash("success", "Quiz succesfully edited");
                         res.redirect("/quizzes");
@@ -272,10 +294,10 @@ exports.edit = function(req, res, next) {
 };
 exports.destroy = function(req, res, next) {
 
-  // Delete image from Cloudinary
-  if (req.quiz.Attachment) {
-      cloudinary.api.delete_resources(req.quiz.Attachment.public_id);
-  }
+    // Delete image from Cloudinary
+    if (req.quiz.Attachment) {
+        cloudinary.api.delete_resources(req.quiz.Attachment.public_id);
+    }
 
 
     req.quiz.destroy().then(function() {
@@ -350,6 +372,27 @@ function updateAttachment(req, uploadResult, quiz) {
         })
         .catch(function(error) { // Ignoro errores de validacion en imagenes
             req.flash('error', 'Image could not be saved: ' + error.message);
+            cloudinary.api.delete_resources(uploadResult.public_id);
+        });
+}
+
+function createAttachment(req, uploadResult, quiz) {
+    if (!uploadResult) {
+        return Promise.resolve();
+    }
+
+    return models.Attachment.create({
+            public_id: uploadResult.public_id,
+            url: uploadResult.url,
+            filename: req.file.originalname,
+            mime: req.file.mimetype,
+            QuizId: quiz.id
+        })
+        .then(function(attachment) {
+            req.flash('success', 'Imagen nueva guardada con éxito.');
+        })
+        .catch(function(error) { // Ignoro errores de validacion en imagenes
+            req.flash('error', 'No se ha podido salvar la nueva imagen: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
 }

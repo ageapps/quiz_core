@@ -26,7 +26,7 @@
             <thead class="thead-default">
                 <tr>
                     <th>#</th>
-                    <th>User</th>
+                    <th class="text-center" >User</th>
                     <% if (session.user){%>
                         <th></th>
                         <th></th>
@@ -39,9 +39,9 @@
                         <th scope="row">
                             <%= users[i].id %>
                         </th>
-                        <td>
+                        <td class="text-center">
                             <span>
-                            <a href="/users/<%= users[i].id %>">
+                            <a class="glyphicon glyphicon-user" href="/users/<%= users[i].id %>">
                                 <%= users[i].username %>
                             </a>
                             </span>
