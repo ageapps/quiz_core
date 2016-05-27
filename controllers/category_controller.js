@@ -36,6 +36,7 @@ exports.index = function(req, res, next) {
         if (req.params.format == "json") {
             res.json(categories);
         } else {
+            console.log(JSON.stringify(categories));
             var search = "";
             res.render('categories/index', {
                 categories: categories,

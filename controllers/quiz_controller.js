@@ -29,6 +29,9 @@ exports.load = function(req, res, next, quizId) {
             }]
         }, {
             model: models.Attachment
+        }, {
+            model: models.Category,
+            as: 'QuizCategories'
         }]
     }).then(function(quiz) {
         if (quiz) {
@@ -77,7 +80,7 @@ exports.question = function(req, res, next) {
         res.json(req.quiz);
     } else {
         var answer = req.query.answer || "";
-
+        console.log(JSON.stringify(req.quiz));
         res.render("quizzes/question", {
             quiz: req.quiz,
             answer: answer,
@@ -175,7 +178,6 @@ exports.create = function(req, res, next) {
             }
         }).then(function(categories) {
 
-
             req.flash("success", "Quiz succesfully created");
             quiz.addQuizCategories(categories).then(function() {
                 if (!req.file) {
@@ -188,11 +190,11 @@ exports.create = function(req, res, next) {
                     // Create new Attachment in DB.
                     return createAttachment(req, uploadResult, quiz);
                 });
+            }).then(function() {
+                res.redirect("/quizzes");
             });
 
 
-        }).then(function() {
-            res.redirect("/quizzes");
         });
     }).catch(Sequelize.ValidationError, function(error) {
 

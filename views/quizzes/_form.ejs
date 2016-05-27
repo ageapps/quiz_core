@@ -9,18 +9,17 @@
 </fieldset>
 <fieldset class="form-group">
     <select class="selectpicker" data-live-search="true" data-style="btn-primary" name="quiz[category]" form="quiz_form" multiple>
-        <% if (quiz.category){ %>
-            <option selected="true">
-                <%=   quiz.category%>
+        <% for (var i in quiz.QuizCategories){ %>
+            <option selected="true" value="<%= quiz.QuizCategories[i].id%>">
+                <%= quiz.QuizCategories[i].text%>
             </option>
-            <option data-divider="true"></option>
             <% } %>
+                <option data-divider="true"></option>
                 <% for (var i in categories){ %>
-                    <% if (quiz.category == categories[i].text ) {continue;} %>
-                        <option value="<%= categories[i].id%>">
-                            <%= categories[i].text%>
-                        </option>
-                        <% } %>
+                    <option value="<%= categories[i].id%>">
+                        <%= categories[i].text%>
+                    </option>
+                    <% } %>
     </select>
 </fieldset>
 <fieldset class="form-group">

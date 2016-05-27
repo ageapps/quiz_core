@@ -18,7 +18,15 @@
 </div>
 
 <div class="container">
-    <h3>Category: <%= quiz.category%></h3>
+    <h3>Categories:</h3>
+    <ul>
+        <% for (var i in quiz.QuizCategories){ %>
+            <li>
+                <%= quiz.QuizCategories[i].text%>
+
+            </li>
+            <% } %>
+    </ul>
 </div>
 
 <div class="container">
