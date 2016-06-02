@@ -11,6 +11,8 @@ exports.load = function(req, res, next, categoryId) {
             include: [{
                 model: models.User,
                 as: "Author"
+            }, {
+                model: models.Attachment
             }]
         }]
     }).then(function(category) {
@@ -30,7 +32,10 @@ exports.index = function(req, res, next) {
     models.Category.findAll({
         include: [{
             model: models.Quiz,
-            as: 'QuizesInCategories'
+            as: 'QuizesInCategories',
+            include: [{
+                model: models.Attachment,
+            }]
         }]
     }).then(function(categories) {
         if (req.params.format == "json") {
@@ -56,7 +61,10 @@ exports.search = function(req, res, next) {
     models.Category.findAll({
         include: [{
             model: models.Quiz,
-            as: 'QuizesInCategories'
+            as: 'QuizesInCategories',
+            include: [{
+                model: models.Attachment,
+            }]
         }],
         where: {
             text: {
@@ -102,6 +110,8 @@ exports.searchInCategory = function(req, res, next) {
         include: [{
             model: models.User,
             as: "Author"
+        }, {
+            model: models.Attachment
         }],
         where: {
             question: {

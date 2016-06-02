@@ -2,7 +2,7 @@
     <h1>Quiz the Question Game</h1>
 </div>
 
-<div class="container">
+<div class="container background-light">
     <div class="row">
         <div class="col-md-6">
             <h2><%= indexTitle %></h2>
@@ -18,81 +18,80 @@
             </form>
         </div>
     </div>
-</div>
-</div>
-<br/>
-<div class="container">
-    <% if  (quizzes.length > 0){ %>
-        <table class="table table-hover">
-            <thead class="thead-default">
-                <tr>
-                    <th>#</th>
-                      <th>Images</th>
-                    <th>Quiz</th>
-                    <% if (session.user ){%>
-                        <th></th>
-                        <th></th>
-                        <% } %>
-                            <th>Category</th>
-                            <th>Author</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for (var i in quizzes){ %>
+    <br>
+    <div class="row container">
+        <% if  (quizzes.length > 0){ %>
+            <table class="table table-hover">
+                <thead class="thead-default">
                     <tr>
-                        <th scope="row">
-                            <%=  (+i+1) %>
-                        </th>
-                        <td>
-                            <% if (quizzes[i].Attachment) { %>
-                                <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
-                                <% } else { %>
-                                    <img src="/images/question.jpg" width="50px" />
-                                    <% } %>
-                        </td>
-                        <td>
-                            <span>
+                        <th>#</th>
+                        <th>Images</th>
+                        <th>Quiz</th>
+                        <% if (session.user ){%>
+                            <th></th>
+                            <th></th>
+                            <% } %>
+                                <th>Category</th>
+                                <th>Author</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i in quizzes){ %>
+                        <tr>
+                            <th scope="row">
+                                <%=  (+i+1) %>
+                            </th>
+                            <td>
+                                <% if (quizzes[i].Attachment) { %>
+                                    <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
+                                    <% } else { %>
+                                        <img src="/images/question.jpg" width="50px" />
+                                        <% } %>
+                            </td>
+                            <td>
+                                <span>
                             <a href="/quizzes/<%= quizzes[i].id %>">
                                 <%= quizzes[i].question %>
                             </a>
                             </span>
-                        </td>
-                        <% if(session.user){ %>
-                            <td>
-                                <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                    <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
-                                    <% } %>
                             </td>
-                            <td>
-                                <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                    <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
-                                    <% } %>
-                            </td>
-                            <% } %>
+                            <% if(session.user){ %>
                                 <td>
-                                    <% var categories = quizzes[i].QuizCategories;%>
-                                        <% for (var j in categories){  %>
-                                            <%= categories[j].text %>
-                                                <% } %>
+                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                        <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
+                                        <% } %>
                                 </td>
                                 <td>
-                              <%     if(quizzes[i].Author){ %>
-                                    <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
-                                        <%= quizzes[i].Author.username %>
-                                    </a>
-                                      <% } %>
+                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
+                                        <% } %>
                                 </td>
-                    </tr>
-                    <% } %>
-            </tbody>
-        </table>
-        <% } else{ %>
-            <h3>No quiz was found</h3>
-            <% } %>
-                <% if (session.user ){%>
-                    <div class="text-center">
-                        <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
-                    </div>
-                    <% } %>
+                                <% } %>
+                                    <td>
+                                        <% var categories = quizzes[i].QuizCategories;%>
+                                            <% for (var j in categories){  %>
+                                                <%= categories[j].text %>
+                                                    <% } %>
+                                    </td>
+                                    <td>
+                                        <%     if(quizzes[i].Author){ %>
+                                            <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
+                                                <%= quizzes[i].Author.username %>
+                                            </a>
+                                            <% } %>
+                                    </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+            <% } else{ %>
+                <h3>No quiz was found</h3>
+                <% } %>
+                    <% if (session.user ){%>
+                        <div class="text-center">
+                            <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
+                        </div>
+                        <% } %>
 
+    </div>
 </div>

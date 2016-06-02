@@ -29,7 +29,9 @@ exports.create = function(req, res, next) {
             req.session.user = {
                 id: user.id,
                 username: user.username,
-                isAdmin: user.isAdmin
+                isAdmin: user.isAdmin,
+                mail: user.mail,
+                foto: user.foto
             };
             res.redirect(redir);
         } else {
@@ -61,7 +63,7 @@ var authenticate = function(username, password) {
             username: username
         }
     }).then(function(user) {
-        if (user && user.verifyPassword(password)) {
+        if (user && user.confirmed && user.verifyPassword(password)) {
             return user;
         } else {
             return null;

@@ -7,17 +7,23 @@ module.exports = {
         return queryInterface.bulkInsert('Users', [{
             username: 'admin',
             password: encryptPassword('admin', 'aaaa'),
+            mail: 'age.quiz@gmail.com',
             salt: 'aaaa',
+            foto: '/images/yo.jpg',
             isAdmin: true,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            confirmed: true
         }, {
             username: 'Admin',
             password: encryptPassword('admin', 'aaaa'),
+            mail: "adrian.gespinosa@gmail.com",
+            foto: '/images/profile.png',
             salt: 'bbbbb',
             isAdmin: true,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            confirmed: true
         }]);
     },
 

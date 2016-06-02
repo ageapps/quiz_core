@@ -27,6 +27,19 @@ module.exports = {
                     }
                 }
             },
+            mail: {
+                type: Sequelize.STRING,
+                unique: true,
+                validate: {
+                    notEmpty: {
+                        msg: "Mail is missing"
+                    }
+                }
+            },
+            foto: {
+                type: Sequelize.STRING,
+                defaultValue: "/images/profile.png"
+            },
             salt: {
                 type: Sequelize.STRING
             },

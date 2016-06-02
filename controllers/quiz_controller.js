@@ -350,7 +350,7 @@ function updateAttachment(req, uploadResult, quiz) {
         return Promise.resolve();
     }
 
-    // Recordar public_id de la imagen antigua.
+    // Save public_id from old image.
     var old_public_id = quiz.Attachment ? quiz.Attachment.public_id : null;
 
     return quiz.getAttachment()
@@ -372,7 +372,7 @@ function updateAttachment(req, uploadResult, quiz) {
                 cloudinary.api.delete_resources(old_public_id);
             }
         })
-        .catch(function(error) { // Ignoro errores de validacion en imagenes
+        .catch(function(error) { // Ignore validation errors
             req.flash('error', 'Image could not be saved: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
@@ -391,10 +391,10 @@ function createAttachment(req, uploadResult, quiz) {
             QuizId: quiz.id
         })
         .then(function(attachment) {
-            req.flash('success', 'Imagen nueva guardada con éxito.');
+            req.flash('success', 'Image saved succesfully.');
         })
-        .catch(function(error) { // Ignoro errores de validacion en imagenes
-            req.flash('error', 'No se ha podido salvar la nueva imagen: ' + error.message);
+        .catch(function(error) { // Ignore validation errors
+            req.flash('error', 'Image could not be saved: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
 }

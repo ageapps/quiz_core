@@ -1,6 +1,80 @@
+<script>
+    function confirmPassword() {
+        var pw1 = document.getElementById('user_password').value;
+        var pw2 = document.getElementById('user_confirm_password').value;
+
+        if (!pw1 || !pw2) {
+            alert('You have to fill in Password and Repeat Password.');
+            return false;
+        }
+
+        if (pw1 === pw2) {
+            return true;
+        } else {
+            alert('Passwords have to be the same.');
+            return false;
+        }
+    }
+</script>
+
 <div class="container">
-    <h1>Edit User</h1>
-    <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT" >
-        <% include _form.ejs %>
-    </form>
+    <h1>Edit Profile</h1>
+    <hr>
+    <div class="row">
+        <!-- form -->
+        <form form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
+            <!-- left column -->
+            <div class="col-md-3">
+                <div class="text-center">
+                    <img src="<%= user.foto%>" class="avatar img-circle" alt="avatar">
+                    <h6>Change your profile photo...</h6>
+                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*" %>">
+                </div>
+            </div>
+
+            <!-- edit column -->
+            <div class="col-md-9 personal-info">
+                <h3>Personal info</h3>
+                <div class="form-group">
+                    <label class="col-lg-3">Username:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" disabled type="text" value="<%= user.username %>">
+                        <small class="text-muted">You can´t edit your username</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Mail:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" disabled type="text" value="<%= user.mail %>">
+                        <small class="text-muted">You can´t edit your mail</small>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Password:</label>
+                    <div class="col-md-8">
+                        <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Confirm password:</label>
+                    <div class="col-md-8">
+                        <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label"></label>
+                    <div class="col-md-8">
+                        <input type="submit" class="btn btn-primary" onclick="return confirmPassword()" value="Save Changes">
+                        <span></span>
+                        <input type="reset" class="btn btn-default" value="Reset">
+                        <a href="/users">
+                            <button type="button" class="btn btn-default">Cancel</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+<hr>

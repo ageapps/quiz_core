@@ -2,7 +2,7 @@
     <h1>Quiz the Question Game</h1>
 </div>
 
-<div class="container">
+<div class="container background-light">
     <div class="row">
         <div class="col-md-6">
             <h2><%= indexTitle %></h2>
@@ -17,59 +17,58 @@
                 </div>
         </div>
     </div>
-</div>
-</div>
-<br/>
-<div class="container">
-    <% if  (users.length > 0){ %>
-        <table class="table table-hover">
-            <thead class="thead-default">
-                <tr>
-                    <th>#</th>
-                    <th class="text-center" >User</th>
-                    <% if (session.user){%>
-                        <th></th>
-                        <th></th>
-                        <% } %>
-                </tr>
-            </thead>
-            <tbody>
-                <% for (var i in users){ %>
+    <br>
+    <div class="row container">
+        <% if  (users.length > 0){ %>
+            <table class="table table-hover">
+                <thead class="thead-default">
                     <tr>
-                        <th scope="row">
-                            <%= users[i].id %>
-                        </th>
-                        <td class="text-center">
-                            <span>
+                        <th>#</th>
+                        <th class="text-center">User</th>
+                        <% if (session.user){%>
+                            <th></th>
+                            <th></th>
+                            <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i in users){ %>
+                        <tr>
+                            <th scope="row">
+                                <%= users[i].id %>
+                            </th>
+                            <td class="text-center">
+                                <span>
                             <a class="glyphicon glyphicon-user" href="/users/<%= users[i].id %>">
                                 <%= users[i].username %>
                             </a>
                             </span>
-                        </td>
-
-                        <% if (session.user ){%>
-                            <td>
-                                <% if(session.user.isAdmin || session.user.id === users[i].id ){%>
-                                    <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/users/<%= users[i].id %>/edit"></a>
-                                    <% } %>
                             </td>
-                            <td>
-                                <% if(session.user.isAdmin && session.user.id !== users[i].id ){%>
 
-                                    <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"></a>
-                                    <% } %>
-                            </td>
-                            <% } %>
-                    </tr>
-                    <% } %>
-            </tbody>
-        </table>
-        <% } else{ %>
-            <h3>No Users were found</h3>
-            <% } %>
-                <% if (session.user ){%>
-                    <div class="text-center">
-                        <p><a class="btn btn-primary btn-lg" href="/users/new" role="button">Create a new User</a></p>
-                    </div>
-                    <% } %>
+                            <% if (session.user ){%>
+                                <td>
+                                    <% if(session.user.isAdmin || session.user.id === users[i].id ){%>
+                                        <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/users/<%= users[i].id %>/edit"></a>
+                                        <% } %>
+                                </td>
+                                <td>
+                                    <% if(session.user.isAdmin && session.user.id !== users[i].id ){%>
+
+                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"></a>
+                                        <% } %>
+                                </td>
+                                <% } %>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+            <% } else{ %>
+                <h3>No Users were found</h3>
+                <% } %>
+                    <% if (session.user ){%>
+                        <div class="text-center">
+                            <p><a class="btn btn-primary btn-lg" href="/users/new" role="button">Create a new User</a></p>
+                        </div>
+                        <% } %>
+    </div>
 </div>

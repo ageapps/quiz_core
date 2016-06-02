@@ -5,6 +5,8 @@ var commentController = require('../controllers/comment_controller');
 var userController = require('../controllers/user_controller');
 var sessionController = require('../controllers/session_controller');
 var categoryContoller = require('../controllers/category_controller');
+var mailContoller = require('../controllers/mail_controller');
+
 
 var multer = require('multer');
 var upload = multer({
@@ -32,6 +34,8 @@ router.param("quizId", quizController.load);
 router.param("userId", userController.load);
 router.param("commentId", commentController.load);
 router.param("categoryId", categoryContoller.load);
+router.param("userMailId", mailContoller.load);
+
 
 
 
@@ -62,6 +66,10 @@ router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, userCon
 router.put('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminOrMyselfRequired, userController.update);
 router.delete('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminAndNotMyselfRequired, userController.destroy);
 
+// mail_controller routes
+router.get('/confirm', mailContoller.confirm);
+router.get('/mail/:userMailId(\\d+)', mailContoller.mail);
+
 // session_controller routes
 router.get('/session', sessionController.new);
 router.post('/session', sessionController.create);
@@ -72,6 +80,7 @@ router.get('/category.:format?', categoryContoller.index);
 router.get('/category/search.:format?', categoryContoller.search);
 router.get('/category/:categoryId(\\d+).:format?', categoryContoller.category);
 router.get('/category/:categoryId(\\d+)/search.:format?', categoryContoller.searchInCategory);
+
 
 
 module.exports = router;

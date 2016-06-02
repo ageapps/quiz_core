@@ -18,9 +18,12 @@
 </script>
 
 <fieldset class="form-group">
-    <label for="question">User</label>
-    <input type="text"  <% if(user.username){ %> <%= "disabled" %> <% } %> class="form-control" name="user[username]" placeholder="Enter your Username" value="<%= user.username %>">
-    <small class="text-muted">You can´t edit your username</small>
+    <label>User</label>
+    <input type="text" class="form-control" name="user[username]" placeholder="Enter your Username" value="<%= user.username %>">
+</fieldset>
+<fieldset class="form-group">
+    <label>Mail</label>
+    <input type="text" class="form-control" name="user[mail]" placeholder="Enter your Mail" value="<%= user.mail %>">
 </fieldset>
 <fieldset class="form-group">
     <label for="user_password">Password:</label>

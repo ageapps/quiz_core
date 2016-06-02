@@ -23,10 +23,27 @@ module.exports = function(sequelize, DataTypes) {
                 }
             }
         },
+        mail: {
+            type: DataTypes.STRING,
+            unique: true,
+            validate: {
+                notEmpty: {
+                    msg: "Mail is missing"
+                }
+            }
+        },
+        foto: {
+            type: DataTypes.STRING,
+            defaultValue: "/images/profile.png"
+        },
         salt: {
             type: DataTypes.STRING,
         },
         isAdmin: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        confirmed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         }
