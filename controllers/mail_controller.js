@@ -12,7 +12,6 @@ var transporter = nodemailer.createTransport({
         pass: 'core_quiz_16'
     }
 });
-//var css = '<style> html{  font-family:  Arial; font-size: 14px;} div{text-align:center;} strong{color:#F60062} a {  color: #E5012C;  text-decoration: none;} a:hover{font-weight:bold;}</style>'
 
 exports.load = function(req, res, next, userMailId) {
     models.User.findById(userMailId).then(function(user) {
@@ -21,7 +20,7 @@ exports.load = function(req, res, next, userMailId) {
             console.log(JSON.stringify(user));
             next();
         } else {
-            throw new Error(userId + "Does not exist");
+            throw new Error(userMailId + "Does not exist");
         }
     }).catch(function(error) {
         next(error);
@@ -68,15 +67,19 @@ exports.confirm = function(req, res, next) {
 
 exports.mail = function(req, res, next) {
 
-    console.log(encrypt("" + req.user.id));
+
+
+    var fullUrl = req.protocol + '://' + req.get('host');
+
+    //console.log(fullUrl);
 
     var mailOptions = {
         from: 'Quizz  <age.quiz@gmail.com>', // sender address
         to: req.user.mail, // list of receivers
         subject: 'Welcome to QUIZ!  Email Confirmation 📩 ', // Subject line
         text: +'Hello ' + req.user.username + '  👤 !\n' + 'Thank you for signing up to QUIZ!\n', // plaintext body
-        html: '<div><img src="http://localhost:9000/images/quiz.png"><br><br>' + 'Hello <strong>' + req.user.username + '</strong> 👤 !<br>' + '<p>Thank you for signing up to QUIZ!</p>' + '<p> Click on this ' + '<a href="http://localhost:9000/confirm?code=' + encrypt("" + req.user.id) + '"> Confirmation Link </a>' + ' to confirm your Quizz account. </p>' // html body
-            + '<a href="http://quiz-adri-2016.herokuapp.com">Sart making your own quizzes!</a></div>'
+        html: '<div><img src="' + fullUrl + '/images/quiz.png"><br><br>' + 'Hello <strong>' + req.user.username + '</strong> 👤 !<br>' + '<p>Thank you for signing up to QUIZ!</p>' + '<p> Click on this ' + '<a href="'+ fullUrl + '/confirm?code=' + encrypt("" + req.user.id) + '"> Link </a>' + ' to confirm your Quizz account. </p>' // html body
+            + '<a href="' + fullUrl + '">Start making your own quizzes!</a></div>'
     };
 
 
