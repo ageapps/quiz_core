@@ -119,7 +119,7 @@
                                             <td>
                                                 <% var categories = quizzes[i].QuizCategories;%>
                                                     <% for (var j in categories){  %>
-                                                        <%= categories[j].text %>
+                                                        <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a> 
                                                             <% } %>
                                             </td>
                                             <% if(session.user){ %>

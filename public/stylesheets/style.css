@@ -1,20 +1,57 @@
+/*Color Pallete
+light color: #E3E8FA
+medium color: #85A5CC
+ logo color: #4a6491
+ dark color: #30395C
+ very dark color: #1A1F2B
+ */
+
 body {
     padding-top: 60px;
-    background: #F1F3FA;
+    background: #E3E8FA;
+}
+.btn-primary {
+    background: #4a6491;
+}
+.btn-primary:hover {
+    background: #30395C;
+}
+a {
+    color: #4a6491;
+}
+a:hover {
+    color: #30395C;
 }
 form .form-group div, form .form-group label {
     margin-bottom: 10px;
 }
-.background-light{
-  background: #fff;
-  border-radius: 6px;
+#indexImage {
+    width: 300px;
 }
-.thead-default th {
+footer img {
+    border: 2px solid transparent;
+}
+footer img:hover {
+    border: 2px solid #4a6491;
+}
+#brand img {
+    height: 35px;
+    margin-top: 10px;
+}
+.container .jumbotron {
+    border-radius: 10px;
+}
+.background-light {
+    background: #fff;
+    border-radius: 10px;
+}
+.thead-default {
+    border-radius: 6px;
     color: #fff;
-    background-color: #265a88;
+    background-color: #4a6491;
 }
-.jumbotron {
-    background-color: #fff;
+.transparent {
+    background-color: transparent;
 }
 img.avatar.img-circle {
     width: 150px
@@ -156,10 +193,13 @@ li.dropdown {
 @media(max-width:768px) {
     #login-dp {
         background-color: inherit;
-        color: #fff;
+        color: #000;
     }
     #login-dp .bottom {
         background-color: inherit;
         border-top: 0 none;
+    }
+    .navbar-text {
+        display: none;
     }
 }

@@ -1,17 +1,18 @@
-<div class="jumbotron vertical-center">
-    <div class="container">
-        <form action="/session" class="form-sign-in col-sm-6 col-sm-offset-3 vcenter" method="post">
-            <h2 class="form-signin-heading">Access to Quizzes</h2>
-            <input type="hidden" name="redir" value="<%= redir %>">
-            <label for="username" class="sr-only">User</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username"
-                   required
-                   autofocus>
-            <div class="col-xs-12" style="height:20px;"></div>
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="password" class="form-control" size="30" placeholder="Password" required>
-            <div class="col-xs-12" style="height:20px;"></div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-        </form>
+<div class="container">
+    <h1></h1>
+    <div class="jumbotron background-light">
+        <div class="container">
+            <form action="/session" class="form-sign-in col-sm-6 col-sm-offset-3 vcenter" method="post">
+                <h2 class="form-signin-heading">Access to Quizzes</h2>
+                <input type="hidden" name="redir" value="<%= redir %>">
+                <label for="username" class="sr-only">User</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+                <div class="col-xs-12" style="height:20px;"></div>
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" id="password" name="password" class="form-control" size="30" placeholder="Password" required>
+                <div class="col-xs-12" style="height:20px;"></div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            </form>
+        </div>
     </div>
 </div>

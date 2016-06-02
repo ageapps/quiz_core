@@ -3,7 +3,16 @@ module.exports = function(sequelize, DataTypes) {
         text: {
             type: DataTypes.STRING,
             validate: {
-                notEmpty: {msg: "Category is missing"}}
+                notEmpty: {
+                    msg: "Category is missing"
+                }
+            }
+        },
+        description: {
+            type: DataTypes.STRING
+        },
+        icon: {
+            type: DataTypes.STRING
         }
     });
 };

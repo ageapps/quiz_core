@@ -24,6 +24,7 @@
             <table class="table table-hover">
                 <thead class="thead-default">
                     <tr>
+                        <th class="text-center"></th>
                         <th class="text-center">Category</th>
                         <th class="text-center">Quizzes</th>
                         <th class="text-center">Description</th>
@@ -32,6 +33,9 @@
                 <tbody class="text-center">
                     <% for (var i in categories){ %>
                         <tr>
+                            <td>
+                                <a href="/category/<%=categories[i].id %>" class="<%=categories[i].icon %>"></a>
+                            </td>
                             <td>
                                 <span>
                             <a href="/category/<%=categories[i].id %>">
@@ -44,7 +48,7 @@
 
                             </td>
                             <td>
-
+                                <%= categories[i].description %>
                             </td>
                         </tr>
                         <% } %>
