@@ -32,7 +32,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% for (var i in users){ %>
+                    <% for (var i in users){
+                      if ( (!users[i].confirmed && !session.user) || ( !users[i].confirmed && (session.user && !session.user.isAdmin))){
+                        continue;
+                      } %>
                         <tr>
                             <th scope="row">
                                 <%= +i+1 %>

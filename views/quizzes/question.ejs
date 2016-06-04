@@ -19,14 +19,12 @@
 
 <div class="container">
     <h3>Categories:</h3>
-    <ul>
         <% for (var i in quiz.QuizCategories){ %>
-            <li>
-                <%= quiz.QuizCategories[i].text%>
+            <p>
+              <a href="/category/<%=quiz.QuizCategories[i].id %>" class="<%=quiz.QuizCategories[i].icon %>"> <%= quiz.QuizCategories[i].text%></a>
 
-            </li>
+            </p>
             <% } %>
-    </ul>
 </div>
 
 <div class="container">

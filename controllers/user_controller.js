@@ -11,9 +11,11 @@ exports.load = function(req, res, next, userId) {
             model: models.Quiz,
             include: [{
                 model: models.Category,
-                  as: 'QuizCategories'
+                as: 'QuizCategories'
             }, {
                 model: models.Attachment
+            }, {
+                model: models.Comment
             }]
         }]
     }).then(function(user) {
@@ -102,11 +104,11 @@ exports.create = function(req, res, next) {
                 });
             } else {
                 return user.save({
-                        fields: ["username", "password", "salt","mail","foto"]
+                        fields: ["username", "password", "salt", "mail", "foto"]
                     })
                     .then(function(user) {
                         req.flash('success', 'User created succesfully');
-                        res.redirect('/mail/' + user.id);
+                        res.redirect('/confirm/' + user.id);
                     })
                     .catch(Sequelize.ValidationError, function(error) {
                         req.flash('error', 'Errors in form:');
@@ -173,15 +175,32 @@ exports.destroy = function(req, res, next) {
         if (req.session.user && req.session.user.id == req.user.id) {
             delete req.session.user;
         }
-        models.Quiz.findAll({
+
+        // Delete his comments
+        models.Comment.findAll({
             where: {
                 AuthorId: req.user.id
             }
-        }).then(function(quizzes) {
+        }).then(function(comments) {
+
+          // Delete his quizzes, comment in quizzes and attachment
+            var quizzes = req.user.Quizzes;
             quizzes.forEach(function(quiz) {
-                var question = quiz.question;
+                console.log(JSON.stringify(quiz));
+                if (quiz.Attachment) {
+                    quiz.Attachment.destroy();
+                }
+                var comments = quiz.Comments;
+                comments.forEach(function(comment) {
+                    comment.destroy();
+                });
                 quiz.destroy();
             });
+            console.log(JSON.stringify(comments));
+            comments.forEach(function(comment) {
+                comment.destroy();
+            });
+
         });
 
         req.flash("success", "User deleted succesfully. His questions where also deleted ");

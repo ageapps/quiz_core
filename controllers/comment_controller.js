@@ -19,7 +19,7 @@ exports.load = function(req, res, next, commentId) {
 
 exports.create = function(req, res, next) {
 
-  var authorId = req.session.user && req.session.user.id || 1;
+    var authorId = req.session.user && req.session.user.id || 1;
 
     var comment = models.Comment.build({
         text: req.body.comment.text,
@@ -29,7 +29,7 @@ exports.create = function(req, res, next) {
 
     comment.save().then(function(comment) {
         req.flash("success", "Comment succesfully added");
-        res.redirect("/quizzes/" + req.quiz.id);
+        res.redirect("/notify/" + comment.id);
     }).catch(Sequelize.ValidationError, function(error) {
 
         req.flash("error", "You comment was empty ");

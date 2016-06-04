@@ -68,7 +68,9 @@ router.delete('/users/:userId(\\d+)', sessionController.loginRequired, userContr
 
 // mail_controller routes
 router.get('/confirm', mailContoller.confirm);
-router.get('/mail/:userMailId(\\d+)', mailContoller.mail);
+router.get('/confirm/:userMailId(\\d+)', mailContoller.confirmationMail);
+router.get('/notify/:commentMailId(\\d+)', mailContoller.notify);
+
 
 // session_controller routes
 router.get('/session', sessionController.new);

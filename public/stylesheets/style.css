@@ -13,7 +13,10 @@ body {
 .btn-primary {
     background: #4a6491;
 }
-.btn-primary:hover {
+.btn-primary:hover,.btn-primary:active,.btn-primary:focus,.btn-primary:active:hover {
+    background: #30395C;
+}
+.open>.dropdown-toggle.btn-primary, .open>.dropdown-toggle.btn-primary:hover {
     background: #30395C;
 }
 a {

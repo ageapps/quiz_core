@@ -13,7 +13,7 @@ var cloudinary_image_options = {
     with: 200,
     height: 200,
     radius: 5,
-    border: "3px_solid_blue",
+    border: "0px_solid_blue",
     tags: ["core", "quiz-2016"]
 };
 
@@ -300,8 +300,6 @@ exports.destroy = function(req, res, next) {
     if (req.quiz.Attachment) {
         cloudinary.api.delete_resources(req.quiz.Attachment.public_id);
     }
-
-
     req.quiz.destroy().then(function() {
         req.flash("success", "Quizz succesfully deleted. ");
         res.redirect("/quizzes");
