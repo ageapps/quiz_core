@@ -32,10 +32,6 @@ module.exports = function(sequelize, DataTypes) {
                 }
             }
         },
-        foto: {
-            type: DataTypes.STRING,
-            defaultValue: "/images/profile.png"
-        },
         salt: {
             type: DataTypes.STRING,
         },

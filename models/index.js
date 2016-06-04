@@ -45,6 +45,9 @@ var User = sequelize.import(path.join(__dirname, "user"));
 
 var Attachment = sequelize.import(path.join(__dirname, "attachment"));
 
+var Avatar = sequelize.import(path.join(__dirname, "avatar"));
+
+
 
 // User - Comment - Quizz relations 1:1:1
 Comment.belongsTo(Quiz);
@@ -77,9 +80,14 @@ Category.belongsToMany(Quiz, {
 Attachment.belongsTo(Quiz);
 Quiz.hasOne(Attachment);
 
+// Avatar - User relations 1:1
+Avatar.belongsTo(User);
+User.hasOne(Avatar);
+
 
 exports.Quiz = Quiz;
 exports.Comment = Comment;
 exports.Category = Category;
 exports.User = User;
 exports.Attachment = Attachment;
+exports.Avatar = Avatar;

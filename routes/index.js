@@ -62,6 +62,7 @@ router.get("/users/search.:format?", userController.search);
 router.get('/users/:userId(\\d+).:format?', userController.user);
 router.get('/users/new', userController.new);
 router.post('/users', userController.create);
+router.post('/users/:userId(\\d+)',sessionController.loginRequired, userController.adminOrMyselfRequired, upload.single("image"), userController.saveAvatar);
 router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, userController.adminOrMyselfRequired, userController.edit);
 router.put('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminOrMyselfRequired, userController.update);
 router.delete('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminAndNotMyselfRequired, userController.destroy);

@@ -36,10 +36,6 @@ module.exports = {
                     }
                 }
             },
-            foto: {
-                type: Sequelize.STRING,
-                defaultValue: "/images/profile.png"
-            },
             salt: {
                 type: Sequelize.STRING
             },

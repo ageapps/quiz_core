@@ -4,6 +4,17 @@ var cloudinary = require('cloudinary');
 var fs = require('fs');
 var Promise = require('promise');
 
+var cloudinary_image_options = {
+    crop: "limit",
+    with: 200,
+    height: 200,
+    radius: 5,
+    border: "0px_solid_blue",
+    tags: ["core", "quiz-2016"]
+};
+
+
+
 exports.load = function(req, res, next, userId) {
 
     models.User.findById(userId, {
@@ -17,9 +28,13 @@ exports.load = function(req, res, next, userId) {
             }, {
                 model: models.Comment
             }]
+        }, {
+            model: models.Avatar
         }]
     }).then(function(user) {
         if (user) {
+            console.log("-----------------USER-------------------");
+            console.log(JSON.stringify(user));
             req.user = user;
             next();
         } else {
@@ -87,7 +102,6 @@ exports.create = function(req, res, next) {
         username: req.body.user.username,
         mail: req.body.user.mail,
         password: req.body.user.password,
-        foto: "/images/profile.png"
     });
 
     models.User.find({
@@ -104,7 +118,7 @@ exports.create = function(req, res, next) {
                 });
             } else {
                 return user.save({
-                        fields: ["username", "password", "salt", "mail", "foto"]
+                        fields: ["username", "password", "salt", "mail"]
                     })
                     .then(function(user) {
                         req.flash('success', 'User created succesfully');
@@ -126,7 +140,59 @@ exports.create = function(req, res, next) {
         });
 };
 
+
+exports.saveAvatar = function(req, res, next) {
+
+    console.log(JSON.stringify(req.body));
+    if (!req.file) {
+        req.flash('info', 'User without Foto.');
+        console.log("------------------NO FILE----------------------");
+        if (req.user.Avatar) {
+            cloudinary.api.delete_resources(user.Avatar.public_id);
+            user.Avatar.destroy().then(function() {
+                res.render('users/edit', {
+                    user: req.user
+                });
+            });
+        }
+        res.render('users/edit', {
+            user: req.user
+        });
+    } else {
+
+        console.log("-------------save to clodinary----------------");
+
+        // Save Image in Cloudinary
+        return uploadResourceToCloudinary(req).then(function(uploadResult) {
+
+            console.log("------------------UPLOADED----------------------");
+            if (req.user.Avatar) {
+                console.log("------------------Update----------------------");
+                // Update Avatar in DB.
+                return updateAvatar(req, uploadResult, req.user).then(function() {
+                    req.flash("success", "User foto succesfully edited");
+                    res.redirect("/users/" + req.user.id);
+                });
+            } else {
+                console.log("------------------Create----------------------");
+                // Create new Attachment in DB.
+                return createAvatar(req, uploadResult, req.user);
+            }
+
+        }).then(function() {
+            res.render('users/edit', {
+                user: req.user
+            });
+        });
+
+    }
+
+}
+
+
+
 exports.update = function(req, res, next) {
+
 
     req.user.password = req.body.user.password;
 
@@ -142,10 +208,9 @@ exports.update = function(req, res, next) {
             fields: ["password", "salt"]
         })
         .then(function(user) {
-            req.flash('success', 'User edited succesfully');
-            res.redirect('/users');
-        })
-        .catch(Sequelize.ValidationError, function(error) {
+            req.flash("success", "User succesfully edited");
+            res.redirect("/users/" + user.id);
+        }).catch(Sequelize.ValidationError, function(error) {
 
             req.flash('error', 'Errors in form:');
             for (var i in error.errors) {
@@ -171,6 +236,12 @@ exports.edit = function(req, res, next) {
 };
 
 exports.destroy = function(req, res, next) {
+
+    // Delete image from Cloudinary
+    if (req.user.Avatar) {
+        cloudinary.api.delete_resources(req.user.Avatar.public_id);
+    }
+
     req.user.destroy().then(function() {
         if (req.session.user && req.session.user.id == req.user.id) {
             delete req.session.user;
@@ -183,7 +254,7 @@ exports.destroy = function(req, res, next) {
             }
         }).then(function(comments) {
 
-          // Delete his quizzes, comment in quizzes and attachment
+            // Delete his quizzes, comment in quizzes and attachment
             var quizzes = req.user.Quizzes;
             quizzes.forEach(function(quiz) {
                 console.log(JSON.stringify(quiz));
@@ -237,7 +308,11 @@ exports.adminAndNotMyselfRequired = function(req, res, next) {
 };
 
 function uploadResourceToCloudinary(req) {
+    console.log("uploadResourceToCloudinary");
     return new Promise(function(resolve, reject) {
+
+
+        console.log("uploadResourceToCloudinary");
         var path = req.file.path;
         cloudinary.uploader.upload(path, function(result) {
                 fs.unlink(path); // delete the uploaded image from ./uploads
@@ -256,28 +331,29 @@ function uploadResourceToCloudinary(req) {
     })
 }
 
-function updateAttachment(req, uploadResult, quiz) {
+function updateAvatar(req, uploadResult, user) {
+    console.log("updateAvatar");
     if (!uploadResult) {
         return Promise.resolve();
     }
-
+    console.log("updateAvatar");
     // Recordar public_id de la imagen antigua.
-    var old_public_id = quiz.Attachment ? quiz.Attachment.public_id : null;
+    var old_public_id = user.Avatar ? user.Avatar.public_id : null;
 
-    return quiz.getAttachment()
-        .then(function(attachment) {
-            if (!attachment) {
-                attachment = models.Attachment.build({
-                    QuizId: quiz.id
+    return user.getAvatar()
+        .then(function(avatar) {
+            if (!avatar) {
+                avatar = models.Avatar.build({
+                    UserId: user.id
                 });
             }
-            attachment.public_id = uploadResult.public_id;
-            attachment.url = uploadResult.url;
-            attachment.filename = req.file.originalname;
-            attachment.mime = req.file.mimetype;
-            return attachment.save();
+            avatar.public_id = uploadResult.public_id;
+            avatar.url = uploadResult.url;
+            avatar.filename = req.file.originalname;
+            avatar.mime = req.file.mimetype;
+            return avatar.save();
         })
-        .then(function(attachment) {
+        .then(function(avatar) {
             req.flash('success', 'Image uploaded succesfully.');
             if (old_public_id) {
                 cloudinary.api.delete_resources(old_public_id);
@@ -290,23 +366,24 @@ function updateAttachment(req, uploadResult, quiz) {
 }
 
 
-function createAttachment(req, uploadResult, quiz) {
+function createAvatar(req, uploadResult, user) {
+    console.log("createAvatar");
     if (!uploadResult) {
         return Promise.resolve();
     }
-
-    return models.Attachment.create({
+    console.log("createAvatar");
+    return models.Avatar.create({
             public_id: uploadResult.public_id,
             url: uploadResult.url,
             filename: req.file.originalname,
             mime: req.file.mimetype,
-            QuizId: quiz.id
+            UserId: user.id
         })
-        .then(function(attachment) {
-            req.flash('success', 'Imagen nueva guardada con éxito.');
+        .then(function(avatar) {
+            req.flash('success', 'Image saved succesfully.');
         })
         .catch(function(error) { // Ignoro errores de validacion en imagenes
-            req.flash('error', 'No se ha podido salvar la nueva imagen: ' + error.message);
+            req.flash('error', 'There was an error saving the image: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
 }

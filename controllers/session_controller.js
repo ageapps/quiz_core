@@ -19,7 +19,6 @@ exports.new = function(req, res, next) {
 exports.create = function(req, res, next) {
 
     var redir = req.body.redir || "/";
-
     var user_name = req.body.username;
     var password = req.body.password;
 
@@ -31,7 +30,7 @@ exports.create = function(req, res, next) {
                 username: user.username,
                 isAdmin: user.isAdmin,
                 mail: user.mail,
-                foto: user.foto
+                Avatar: user.Avatar
             };
             res.redirect(redir);
         } else {
@@ -59,6 +58,9 @@ exports.loginRequired = function(req, res, next) {
 var authenticate = function(username, password) {
 
     return models.User.findOne({
+        include: [{
+            model: models.Avatar
+        }],
         where: {
             username: username
         }

@@ -4,7 +4,11 @@
             <div class="profile-sidebar">
                 <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
-                    <img src="<%= user.foto %>" class="avatar img-circle img-responsive" alt="avatar">
+                  <% if (user.Avatar) { %>
+                      <img src="<%= user.Avatar.url %>" class="avatar img-circle img-responsive">
+                      <% } else { %>
+                          <img src="/images/profile.png" class="avatar img-circle img-responsive" />
+                          <% } %>
                 </div>
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
@@ -119,7 +123,7 @@
                                             <td>
                                                 <% var categories = quizzes[i].QuizCategories;%>
                                                     <% for (var j in categories){  %>
-                                                        <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a> 
+                                                        <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a>
                                                             <% } %>
                                             </td>
                                             <% if(session.user){ %>

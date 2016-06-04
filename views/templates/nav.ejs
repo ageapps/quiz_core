@@ -1,3 +1,9 @@
+<script type="text/javascript">
+    function setRedir() {
+        document.getElementById('redir').value = window.location.href;
+    }
+</script>
+
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -47,7 +53,7 @@
                                         <form class="form" role="form" method="post" action="/session" accept-charset="UTF-8" id="login-nav">
                                             <div class="form-group">
                                                 <label class="sr-only" for="username">Username</label>
-                                                <input type="hidden" name="redir">
+                                                <input type="hidden" name="redir" id="redir">
                                                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
                                             </div>
                                             <div class="form-group">
@@ -56,7 +62,7 @@
                                                 <!-- <div class="help-block text-right"><a href="">Forget the password ?</a></div> -->
                                             </div>
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                                                <button type="submit" class="btn btn-primary btn-block" onclick="return setRedir()">Sign in</button>
                                             </div>
                                         </form>
                                     </div>
@@ -81,7 +87,11 @@
                                         <div class="row">
                                             <div class="col-lg-4">
                                                 <p class="text-center">
-                                                    <img src="<%= session.user.foto %>" class="icon-size img-circle">
+                                                    <% if (session.user.Avatar) { %>
+                                                        <img src="<%= session.user.Avatar.url %>" class="icon-size img-circle">
+                                                        <% } else { %>
+                                                            <img src="/images/profile.png" class="icon-size img-circle" />
+                                                            <% } %>
                                                 </p>
                                             </div>
                                             <div class="col-lg-8">

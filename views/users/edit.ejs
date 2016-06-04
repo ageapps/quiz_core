@@ -21,31 +21,38 @@
     <h1>Edit Profile</h1>
     <hr>
     <div class="row">
-        <!-- form -->
-        <form form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
+        <form role="form" method="post" action="/users/<%= user.id %>" enctype="multipart/form-data">
             <!-- left column -->
             <div class="col-md-3">
                 <div class="text-center">
-                    <img src="<%= user.foto%>" class="avatar img-circle" alt="avatar">
-                    <h6>Change your profile photo...</h6>
-                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*" %>">
+                    <% if (user.Avatar) { %>
+                        <img src="<%= user.Avatar.url%>" class="avatar img-circle" alt="avatar">
+                        <% } else { %>
+                            <img src="/images/profile.png" class="avatar img-circle" />
+                            <% } %>
+                                <h6 class="profile-usertitle-role">Change your profile photo</h6>
+                                <input type="file" class="form-control" name="image" accept="image/*">
+                                <br>
+                                <input type="submit" class="btn btn-danger" value="Save Foto">
                 </div>
             </div>
-
+        </form>
+        <!-- form -->
+        <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
             <!-- edit column -->
             <div class="col-md-9 personal-info">
                 <h3>Personal info</h3>
                 <div class="form-group">
                     <label class="col-lg-3">Username:</label>
                     <div class="col-lg-8">
-                        <input class="form-control" disabled type="text" value="<%= user.username %>">
+                        <input class="form-control" disabled type="text" name="user[username]" value="<%= user.username %>">
                         <small class="text-muted">You can´t edit your username</small>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-lg-3 control-label">Mail:</label>
                     <div class="col-lg-8">
-                        <input class="form-control" disabled type="text" value="<%= user.mail %>">
+                        <input class="form-control" name="user[mail]" disabled type="text" value="<%= user.mail %>">
                         <small class="text-muted">You can´t edit your mail</small>
                     </div>
                 </div>

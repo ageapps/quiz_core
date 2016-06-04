@@ -4,3 +4,4 @@ quiz.sqlite
 .env
 npm-debug.log
 comands
+Procfile
