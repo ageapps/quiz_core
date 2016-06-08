@@ -24,7 +24,14 @@
 </fieldset>
 <fieldset class="form-group">
     <label for="image">Image</label>
-    <input type="file" class="form-control" id="image" name="image" accept="image/*" %>">
+    <div class="input-group">
+        <label class="input-group-btn">
+            <span class="btn btn-primary">
+        Browse&hellip; <input type="file" name="image" style="display: none;"  id="image" name="image"  accept="image/*"  >
+        </span>
+        </label>
+        <input type="text" class="form-control" readonly>
+    </div>
 </fieldset>
 <button type="submit" class="btn btn-primary">Submit</button>
 <button type="reset" class="btn btn-primary">Reset</button>

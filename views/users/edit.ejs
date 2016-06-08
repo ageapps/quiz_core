@@ -15,73 +15,109 @@
             return false;
         }
     }
+    $(function() {
+
+        //  We can attach the `fileselect` event to all file inputs on the page
+        $(document).on('change', ':file', function() {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        // We can watch for our custom `fileselect` event like this
+        $(document).ready(function() {
+            $(':file').on('fileselect', function(event, numFiles, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+
+            });
+        });
+
+    });
 </script>
 
 <div class="container">
     <h1>Edit Profile</h1>
-    <hr>
     <div class="row">
-        <form role="form" method="post" action="/users/<%= user.id %>" enctype="multipart/form-data">
-            <!-- left column -->
-            <div class="col-md-3">
-                <div class="text-center">
-                    <% if (user.Avatar) { %>
-                        <img src="<%= user.Avatar.url%>" class="avatar img-circle" alt="avatar">
-                        <% } else { %>
-                            <img src="/images/profile.png" class="avatar img-circle" />
-                            <% } %>
-                                <h6 class="profile-usertitle-role">Change your profile photo</h6>
-                                <input type="file" class="form-control" name="image" accept="image/*">
-                                <br>
-                                <input type="submit" class="btn btn-danger" value="Save Foto">
-                </div>
-            </div>
-        </form>
-        <!-- form -->
-        <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
-            <!-- edit column -->
-            <div class="col-md-9 personal-info">
-                <h3>Personal info</h3>
-                <div class="form-group">
-                    <label class="col-lg-3">Username:</label>
-                    <div class="col-lg-8">
-                        <input class="form-control" disabled type="text" name="user[username]" value="<%= user.username %>">
-                        <small class="text-muted">You can´t edit your username</small>
+        <div class="container background-light">
+            <br>
+            <form role="form" method="post" action="/users/<%= user.id %>" enctype="multipart/form-data">
+                <!-- left column -->
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <% if (user.Avatar) { %>
+                            <img src="<%= user.Avatar.url%>" class="avatar img-circle" alt="avatar">
+                            <% } else { %>
+                                <img src="/images/profile.png" class="avatar img-circle" />
+                                <% } %>
+                                    <h6 class="profile-usertitle-role">Change your profile photo</h6>
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                        Browse&hellip; <input type="file" name="image" style="display: none;" multiple>
+                                        </span>
+                                        </label>
+                                        <input type="text" class="form-control" readonly>
+                                    </div>
+                                    <br>
+                                    <input type="submit" class="btn btn-success" value="Save Foto">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-lg-3 control-label">Mail:</label>
-                    <div class="col-lg-8">
-                        <input class="form-control" name="user[mail]" disabled type="text" value="<%= user.mail %>">
-                        <small class="text-muted">You can´t edit your mail</small>
+            </form>
+            <!-- form -->
+            <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
+                <!-- edit column -->
+                <div class="col-md-9 personal-info">
+                    <h3>Personal info</h3>
+                    <div class="form-group">
+                        <label class="col-lg-3">Username:</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" type="text" name="user[username]" value="<%= user.username %>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Mail:</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" name="user[mail]" disabled type="text" value="<%= user.mail %>">
+                            <small class="text-muted">You can´t edit your mail</small>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Password:</label>
+                        <div class="col-md-8">
+                            <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Confirm password:</label>
+                        <div class="col-md-8">
+                            <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-8">
+                            <input type="submit" class="btn btn-primary" onclick="return confirmPassword()" value="Save Changes">
+                            <span></span>
+                            <input type="reset" class="btn btn-default" value="Reset">
+                            <a href="/users">
+                                <button type="button" class="btn btn-default">Cancel</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div style="clear: both"></div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Password:</label>
-                    <div class="col-md-8">
-                        <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Confirm password:</label>
-                    <div class="col-md-8">
-                        <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label"></label>
-                    <div class="col-md-8">
-                        <input type="submit" class="btn btn-primary" onclick="return confirmPassword()" value="Save Changes">
-                        <span></span>
-                        <input type="reset" class="btn btn-default" value="Reset">
-                        <a href="/users">
-                            <button type="button" class="btn btn-default">Cancel</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
+            </form>
+            <br>
+        </div>
     </div>
 </div>
 <hr>

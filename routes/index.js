@@ -18,14 +18,13 @@ var upload = multer({
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index');
-    //  res.render('index', { pepe:'El portal donde podrá crear sus propios juegos!' });
-    //res.render('index', { subtitle:'El portal donde podrá crear sus propios juegos!'});
 });
+
+/* GET author page. */
 router.get('/creditos', function(req, res, next) {
-    res.render('creditos', {
-        title: 'Créditos',
-        subtitle1: 'Te presento al autor',
-        subtitle2: 'Y su video molon'
+    res.render('credits', {
+        title: 'Credits',
+        subtitle1: 'Meet the Author',
     });
 });
 

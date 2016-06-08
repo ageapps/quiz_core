@@ -41,7 +41,7 @@ app.use(partials());
 app.use(flash());
 
 // req.session avaliable in views
-app.use(function(req, res, next) {  
+app.use(function(req, res, next) {
     res.locals.session = req.session;
     res.locals.url = req.url;
 
@@ -58,7 +58,6 @@ app.use(function(req, res, next) {
             // Logout logged user
             req.session.user = undefined;
             req.flash("error", "User was logged out for inactivity");
-            console.log("------------------User was logged out--------------------");
         } else {
             // Restart time
             req.session.user.sessionStart = new Date().getTime();

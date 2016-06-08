@@ -1,77 +1,82 @@
 <div class="container">
-    <h1>Quiz the Question Game</h1>
+    <h1><%= indexTitle %></h1>
 </div>
 
 <div class="container background-light">
-    <div class="row">
-        <div class="col-md-6">
-            <h2><%= indexTitle %></h2>
-            <form role="form" method="get" action="/users/search" id="custom-search-input">
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control input-lg" placeholder="Search" name="search" id="search" />
-                    <span class="input-group-btn">
-                    <button class="btn btn-primary btn-lg" type="submit">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </span>
-                </div>
-        </div>
-    </div>
     <br>
-    <div class="row container">
-        <% if  (users.length > 0){ %>
-            <table class="table table-hover">
-                <thead class="thead-default">
-                    <tr>
-                        <th>#</th>
-                        <th class="text-center">User</th>
-                        <% if (session.user){%>
-                            <th></th>
-                            <th></th>
-                            <% } %>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i in users){
-                      if ( (!users[i].confirmed && !session.user) || ( !users[i].confirmed && (session.user && !session.user.isAdmin))){
-                        continue;
-                      } %>
-                        <tr>
-                            <th scope="row">
-                                <%= +i+1 %>
-                            </th>
-                            <td class="text-center">
-                                <span>
-                            <a class="glyphicon glyphicon-user" href="/users/<%= users[i].id %>">
-                                <%= users[i].username %>
-                            </a>
-                            </span>
-                            </td>
-
-                            <% if (session.user ){%>
-                                <td>
-                                    <% if(session.user.isAdmin || session.user.id === users[i].id ){%>
-                                        <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/users/<%= users[i].id %>/edit"></a>
-                                        <% } %>
-                                </td>
-                                <td>
-                                    <% if(session.user.isAdmin && session.user.id !== users[i].id ){%>
-
-                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"></a>
-                                        <% } %>
-                                </td>
-                                <% } %>
-                        </tr>
-                        <% } %>
-                </tbody>
-            </table>
-            <% } else{ %>
-                <h3>No Users were found</h3>
-                <% } %>
-                    <% if (session.user ){%>
-                        <div class="text-center">
-                            <p><a class="btn btn-primary btn-lg" href="/users/new" role="button">Create a new User</a></p>
+    <div class="panel panel-default panel-table">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col col-xs-4">
+                    <form role="form" method="get" action="/users/search" id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control input-lg" placeholder="Search" name="search" id="search" value="<%= search %>" />
+                            <span class="input-group-btn">
+                          <button class="btn btn-primary btn-lg" type="submit">
+                              <i class="glyphicon glyphicon-search"></i>
+                          </button>
+                      </span>
                         </div>
-                        <% } %>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <% if  (users.length > 0){ %>
+                <table class="table table-hover table-bordered table-list">
+                    <thead class="thead-default">
+                        <tr>
+                            <% if (session.user){%>
+                                <th><i class="glyphicon glyphicon-cog"></i></th>
+                                <th class="hidden-xs">ID</th>
+                                <% } %>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i in users){
+                    if ( (!users[i].confirmed && !session.user) || ( !users[i].confirmed && (session.user && !session.user.isAdmin))){
+                      continue;
+                    } %>
+                            <tr>
+                                <% if (session.user ){%>
+                                    <td>
+                                        <% if(session.user.isAdmin || session.user.id === users[i].id ){%>
+                                            <a class="btn btn-default" aria-hidden="true" href="/users/<%= users[i].id %>/edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            <% } %>
+                                                <% if(session.user.isAdmin && session.user.id !== users[i].id ){%>
+
+                                                    <a class="btn btn-danger" aria-hidden="true" href="/users/<%= users[i].id %>?_method=DELETE" onClick="return confirm('Delete User: <%= users[i].username %>')"><i class="glyphicon glyphicon-trash"></i></a>
+                                                    <% } %>
+                                    </td>
+                                    <td class="hidden-xs">
+                                        <%= users[i].id %>
+                                    </td>
+                                    <% } %>
+                                        <td>
+                                            <a class="glyphicon glyphicon-user" href="/users/<%= users[i].id %>">
+                                                <%= users[i].username %>
+                                            </a>
+
+                                        </td>
+                                        <td>
+                                            <%= users[i].mail %>
+                                        </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+                <% } else{ %>
+                    <h3>No Users were found</h3>
+                    <% } %>
+                        <% if (session.user ){%>
+                            <div class="text-center">
+                                <br>
+                                <p><a class="btn btn-primary btn-lg" href="/users/new" role="button">Create a new User</a></p>
+                            </div>
+                            <% } %>
+
+        </div>
     </div>
 </div>

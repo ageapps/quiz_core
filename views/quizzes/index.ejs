@@ -1,9 +1,20 @@
-<div class="container">
-    <h1>Quiz the Question Game</h1>
-</div>
+<script type="text/javascript">
+    $(document).ready(function() {
 
+        $('.quizzContainer').hover(
+            function() {
+                $(this).find('.caption').slideDown(250); //.fadeIn(250)
+            },
+            function() {
+                $(this).find('.caption').slideUp(250); //.fadeOut(205)
+            }
+        );
+    });
+</script>
+<br>
 <div class="container background-light">
-    <div class="row">
+    <br>
+    <div class="row container">
         <div class="col-md-6">
             <h2><%= indexTitle %></h2>
             <form role="form" method="get" action="/quizzes/search" id="custom-search-input">
@@ -18,80 +29,82 @@
             </form>
         </div>
     </div>
-    <br>
     <div class="row container">
         <% if  (quizzes.length > 0){ %>
-            <table class="table table-hover">
-                <thead class="thead-default">
-                    <tr>
-                        <th>#</th>
-                        <th>Images</th>
-                        <th>Quiz</th>
-                        <% if (session.user ){%>
-                            <th></th>
-                            <th></th>
-                            <% } %>
-                                <th>Category</th>
-                                <th>Author</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i in quizzes){ %>
-                        <tr>
-                            <th scope="row">
-                                <%=  (+i+1) %>
-                            </th>
-                            <td>
-                                <% if (quizzes[i].Attachment) { %>
-                                    <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
-                                    <% } else { %>
-                                        <img src="/images/question.jpg" width="50px" />
-                                        <% } %>
-                            </td>
-                            <td>
-                                <span>
-                            <a href="/quizzes/<%= quizzes[i].id %>">
-                                <%= quizzes[i].question %>
-                            </a>
-                            </span>
-                            </td>
-                            <% if(session.user){ %>
-                                <td>
-                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                        <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
-                                        <% } %>
-                                </td>
-                                <td>
-                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
-                                        <% } %>
-                                </td>
-                                <% } %>
-                                    <td>
-                                        <% var categories = quizzes[i].QuizCategories;%>
-                                            <% for (var j in categories){  %>
-                                                <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a>
+            <% for (var i in quizzes){ %>
+                <div class="col-md-3">
+                    <div class="quizzContainer">
+                        <% if (quizzes[i].Attachment) { %>
+                            <div class="caption">
+                                <h4><%= quizzes[i].question %></h4>
+                                <h3><a href="/quizzes/<%= quizzes[i].id %>" class="label label-danger" rel="tooltip" title="answer">Answer</a></h3>
+                                <%  if(quizzes[i].Author){ %>
+                                    <p>
+                                        <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
+                                            <%= quizzes[i].Author.username %>
+                                        </a>
+                                        <% if(session.user){ %>
+                                            <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                                <a class="btn btn-default" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                <a class="btn btn-danger" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"><i class="glyphicon glyphicon-trash"></i></a>
+                                                <% } %>
                                                     <% } %>
-                                    </td>
-                                    <td>
-                                        <%     if(quizzes[i].Author){ %>
+                                    </p>
+                                    <% } %>
+                                        <p>
+                                            <% var categories = quizzes[i].QuizCategories;%>
+                                                <% for (var j in categories){  %>
+                                                    <a href="/category/<%=categories[j].id %>" class="btn btn-default"><i class="<%=categories[j].icon %>"></i></a> &nbsp;
+                                                    <% } %>
+                                        </p>
+
+                            </div>
+                            <div class="thumbnail_container">
+                                <div class="thumbnail">
+                                    <img class="quizzImage" src="<%= quizzes[i].Attachment.url %>" width="50px" />
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <div class="noFoto">
+                                    <h4><%= quizzes[i].question %></h4>
+                                    <h3><a href="/quizzes/<%= quizzes[i].id %>" class="label label-danger" rel="tooltip" title="answer">Answer</a></h3>
+                                    <% if(quizzes[i].Author){ %>
+                                        <p>
                                             <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= quizzes[i].AuthorId %>">
                                                 <%= quizzes[i].Author.username %>
                                             </a>
-                                            <% } %>
-                                    </td>
-                        </tr>
-                        <% } %>
-                </tbody>
-            </table>
-            <% } else{ %>
-                <h3>No quiz was found</h3>
+                                            <% if(session.user){ %>
+                                                <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                                    <a class="btn btn-default" href="/quizzes/<%= quizzes[i].id %>/edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                    <a class="btn btn-danger" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"><i class="glyphicon glyphicon-trash"></i></a>
+                                                    <% } %>
+                                                        <% } %>
+                                        </p>
+                                        <% } %>
+                                            <p class="text-center">
+                                                <% var categories = quizzes[i].QuizCategories;%>
+                                                    <% for (var j in categories){  %>
+                                                        <a href="/category/<%=categories[j].id %>" class="btn btn-default"><i class="<%=categories[j].icon %>"></i></a> &nbsp;
+                                                        <% } %>
+                                            </p>
+                                </div>
+                                <div class="thumbnail_container">
+                                    <div class="thumbnail">
+                                        <img class="quizzImage" src="/images/question.jpg" width="50px" />
+                                    </div>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
                 <% } %>
-                    <% if (session.user ){%>
-                        <div class="text-center">
-                            <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
-                        </div>
+                    <% } else{ %>
+                        <h3>No quiz was found</h3>
                         <% } %>
-
     </div>
+    <% if (session.user ){%>
+        <br>
+        <div class="text-center">
+            <p><a class="btn btn-primary btn-lg" href="/quizzes/new" role="button">Make new Quiz</a></p>
+        </div>
+        <% } %>
 </div>

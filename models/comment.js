@@ -14,4 +14,3 @@ module.exports = function(sequelize, DataTypes) {
         }
     });
 };
-// ./node_modules/.bin/sequelize migration:create --name AddAcceptedToCommentsTable --url sqlite://$(pwd)/quiz.sqlite

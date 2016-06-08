@@ -96,6 +96,9 @@
                                             </div>
                                             <div class="col-lg-8">
                                                 <p class="text-left profile-usertitle-role "><strong><%= session.user.isAdmin ? "Administrator" : "Player"%></strong></p>
+                                                <p class="text-left small profile-usertitle-name">
+                                                    <%=  session.user.username %>
+                                                </p>
                                                 <p class="text-left small">
                                                     <%=  session.user.mail %>
                                                 </p>

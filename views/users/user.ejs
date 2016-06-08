@@ -4,11 +4,11 @@
             <div class="profile-sidebar">
                 <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
-                  <% if (user.Avatar) { %>
-                      <img src="<%= user.Avatar.url %>" class="avatar img-circle img-responsive">
-                      <% } else { %>
-                          <img src="/images/profile.png" class="avatar img-circle img-responsive" />
-                          <% } %>
+                    <% if (user.Avatar) { %>
+                        <img src="<%= user.Avatar.url %>" class="avatar img-circle img-responsive">
+                        <% } else { %>
+                            <img src="/images/profile.png" class="avatar img-circle img-responsive" />
+                            <% } %>
                 </div>
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
@@ -94,9 +94,8 @@
                                         <th>Images</th>
                                         <th>Quiz</th>
                                         <th>Categories</th>
-                                        <% if (session.user ){%>
-                                            <th></th>
-                                            <th></th>
+                                        <% if (session.user){%>
+                                            <th><i class="glyphicon glyphicon-cog"></i></th>
                                             <% } %>
                                     </tr>
                                 </thead>
@@ -124,18 +123,17 @@
                                                 <% var categories = quizzes[i].QuizCategories;%>
                                                     <% for (var j in categories){  %>
                                                         <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a>
-                                                            <% } %>
+                                                        <% } %>
                                             </td>
                                             <% if(session.user){ %>
                                                 <td>
                                                     <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                                        <a class="glyphicon glyphicon-pencil" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"></a>
+                                                        <a class="btn btn-default" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"><i class="glyphicon glyphicon-pencil"></i></a>
                                                         <% } %>
-                                                </td>
-                                                <td>
-                                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"></a>
-                                                        <% } %>
+
+                                                            <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                                                <a class="btn btn-danger" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"><i class="glyphicon glyphicon-trash"></i></a>
+                                                                <% } %>
                                                 </td>
                                                 <% } %>
 

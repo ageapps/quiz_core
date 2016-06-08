@@ -25,7 +25,10 @@ exports.load = function(req, res, next, quizId) {
             model: models.Comment,
             include: [{
                 model: models.User,
-                as: "Author"
+                as: "Author",
+                include: [{
+                    model: models.Avatar
+                }]
             }]
         }, {
             model: models.Attachment
@@ -84,7 +87,9 @@ exports.question = function(req, res, next) {
         res.render("quizzes/question", {
             quiz: req.quiz,
             answer: answer,
+            result: "",
             comment: "",
+            answered: false,
             QuizId: req.quiz.id
         });
     }
@@ -94,11 +99,19 @@ exports.question = function(req, res, next) {
 exports.check = function(req, res, next) {
     var answer = req.query.answer || "";
     var result = ((answer === req.quiz.answer) ? "Correct" : "Wrong");
-    res.render("quizzes/check", {
-        quiz: req.quiz,
-        result: result,
-        answer: answer,
-    });
+    if (answer) {
+      res.render("quizzes/question", {
+          quiz: req.quiz,
+          comment: "",
+          result: result,
+          answer: answer,
+          answered: true,
+          QuizId: req.quiz.id
+      });
+    } else {
+        res.redirect("/quizzes/" + req.quiz.id);
+    }
+
 };
 
 exports.search = function(req, res, next) {
@@ -108,6 +121,11 @@ exports.search = function(req, res, next) {
         include: [{
             model: models.User,
             as: 'Author'
+        }, {
+            model: models.Category,
+            as: 'QuizCategories'
+        }, {
+            model: models.Attachment
         }],
         where: {
             question: {
@@ -145,7 +163,6 @@ exports.new = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-
 
     var authorId = req.session.user && req.session.user.id || 1;
     var quiz = models.Quiz.build({

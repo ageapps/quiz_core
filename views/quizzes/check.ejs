@@ -1,10 +1,20 @@
-<div class="container">
-    <h1>Quiz the Question Game</h1>
-    <h3>
-       The answer <%= answer %> is  <%= result %>
-    </h3>
-    <br>
-    <p>
-        <a href="/quizzes/<%= quiz.id %>/?answer=<%= answer %>">Try Again</a>
-    </p>
+<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-labelledby="checkAnswerModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="checkAnswerModal">Result</h4>
+            </div>
+            <div class="modal-body text-center">
+                <h3>
+                 The answer <%= answer %> is  <%= result %>
+              </h3>
+                <% var img ="/images/wrong.png";
+                if(result === "Correct"){
+                    img = "/images/right.png"
+                  } %>
+              <img src="<%= img %>" alt="answer" class="icon-size"/>
+            </div>
+        </div>
+    </div>
 </div>

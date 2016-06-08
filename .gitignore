@@ -1,7 +1,8 @@
 node_modules
-.DS_store
+.DS_Store
 quiz.sqlite
 .env
+*.idea
 npm-debug.log
 comands
 Procfile

@@ -13,7 +13,7 @@ body {
 .btn-primary {
     background: #4a6491;
 }
-.btn-primary:hover,.btn-primary:active,.btn-primary:focus,.btn-primary:active:hover {
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:hover {
     background: #30395C;
 }
 .open>.dropdown-toggle.btn-primary, .open>.dropdown-toggle.btn-primary:hover {
@@ -49,7 +49,6 @@ footer img:hover {
     border-radius: 10px;
 }
 .thead-default {
-    border-radius: 6px;
     color: #fff;
     background-color: #4a6491;
 }
@@ -57,10 +56,14 @@ footer img:hover {
     background-color: transparent;
 }
 img.avatar.img-circle {
-    width: 150px
+    width: 150px;
+    height: 150px;
 }
 li.dropdown {
     margin-right: 15px;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #4a6491;
 }
 #login-dp {
     min-width: 250px;
@@ -192,7 +195,146 @@ li.dropdown {
 }
 .icon-size {
     width: 87px;
+    height: 87px;
 }
+
+/*tables*/
+
+.panel-table .panel-body {
+    padding: 0;
+}
+.panel-table .panel-body .table-bordered {
+    border-style: none;
+    margin: 0;
+}
+.panel-table .panel-body .table-bordered > thead > tr > th:first-of-type {
+    text-align: center;
+    width: 100px;
+}
+.panel-table .panel-body .table-bordered > thead > tr > th:last-of-type, .panel-table .panel-body .table-bordered > tbody > tr > td:last-of-type {
+    border-right: 0px;
+}
+.panel-table .panel-body .table-bordered > thead > tr > th:first-of-type, .panel-table .panel-body .table-bordered > tbody > tr > td:first-of-type {
+    border-left: 0px;
+}
+.panel-table .panel-body .table-bordered > tbody > tr:first-of-type > td {
+    border-bottom: 0px;
+}
+.panel-table .panel-body .table-bordered > thead > tr:first-of-type > th {
+    border-top: 0px;
+}
+.panel-table .panel-footer .pagination {
+    margin: 0;
+}
+
+/*
+used to vertically center elements, may need modification if you're not using default sizes.
+*/
+
+.panel-table .panel-footer .col {
+    line-height: 34px;
+    height: 34px;
+}
+.panel-table .panel-heading .col h3 {
+    line-height: 30px;
+    height: 30px;
+}
+.panel-table .panel-body .table-bordered > tbody > tr > td {
+    line-height: 34px;
+}
+
+/*grid of quizzes*/
+
+.quizzContainer {
+    position: relative;
+    overflow: hidden;
+    height: 180px;
+}
+.thumbnail_container {
+    position: relative;
+    height: 180px;
+}
+.thumbnail {
+    position: absolute;
+    width: 100%;
+    height: 180px;
+}
+.thumbnail .quizzImage {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.quizzImage {
+    max-height: 100%;
+    max-width: 100%;
+}
+.caption {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(66, 139, 202, 0.75);
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+    display: none;
+    text-align: center;
+    color: #fff !important;
+    z-index: 2;
+}
+.noFoto {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(66, 139, 202, 0.75);
+    width: 100%;
+    height: 180px;
+    padding: 2%;
+    text-align: center;
+    color: #fff !important;
+    z-index: 2;
+}
+.noFoto a, .noFoto a:hover, .noFoto h4, .caption a, .caption a:hover, .caption h4 {
+    color: #fff;
+}
+.noFoto a.btn-default, .caption a.btn-default {
+    color: #4a6491;
+}
+.col-md-3, .row.container {
+    margin-bottom: 10px;
+}
+.thumbnailComment {
+    padding:0px;
+}
+.panel {
+	position:relative;
+}
+.panel>.panel-heading:after,.panel>.panel-heading:before{
+	position:absolute;
+	top:11px;left:-16px;
+	right:100%;
+	width:0;
+	height:0;
+	display:block;
+	content:" ";
+	border-color:transparent;
+	border-style:solid solid outset;
+	pointer-events:none;
+}
+.panel>.panel-heading:after{
+	border-width:7px;
+	border-right-color:#f7f7f7;
+	margin-top:1px;
+	margin-left:2px;
+}
+.panel>.panel-heading:before{
+	border-right-color:#ddd;
+	border-width:8px;
+}
+
+
 @media(max-width:768px) {
     #login-dp {
         background-color: inherit;

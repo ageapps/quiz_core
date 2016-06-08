@@ -3,13 +3,11 @@ var Sequelize = require('sequelize');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 
-
-// login
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
         user: 'age.quiz@gmail.com',
-        pass: 'core_quiz_16'
+        pass: process.env.MAIL_PASSWORD
     }
 });
 
