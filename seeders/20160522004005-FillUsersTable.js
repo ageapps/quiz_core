@@ -15,7 +15,7 @@ module.exports = {
             confirmed: true
         }, {
             username: 'Admin',
-            password: encryptPassword('admin', 'aaaa'),
+            password: encryptPassword('admin', 'bbbbb'),
             mail: "adrian.gespinosa@gmail.com",
             salt: 'bbbbb',
             isAdmin: true,
@@ -24,7 +24,7 @@ module.exports = {
             confirmed: true
         }, {
             username: 'pepe',
-            password: encryptPassword('pepe', 'aaaa'),
+            password: encryptPassword('pepe', 'ccccc'),
             mail: "pepe@gmail.com",
             salt: 'ccccc',
             isAdmin: true,
@@ -33,7 +33,7 @@ module.exports = {
             confirmed: true
         }, {
             username: 'jose',
-            password: encryptPassword('jose', 'aaaa'),
+            password: encryptPassword('jose', 'ddddd'),
             mail: "jose@gmail.com",
             salt: 'ddddd',
             isAdmin: true,
@@ -42,7 +42,7 @@ module.exports = {
             confirmed: true
         }, {
             username: 'juan',
-            password: encryptPassword('juan', 'aaaa'),
+            password: encryptPassword('juan', 'eeeee'),
             mail: "juan@gmail.com",
             salt: 'eeeee',
             isAdmin: true,
@@ -51,7 +51,7 @@ module.exports = {
             confirmed: true
         }, {
             username: 'adri',
-            password: encryptPassword('adri', 'aaaa'),
+            password: encryptPassword('adri', 'fffff'),
             mail: "adri@gmail.com",
             salt: 'fffff',
             isAdmin: true,
