@@ -173,8 +173,10 @@ exports.saveAvatar = function(req, res, next) {
             });
         }
         // update session instance
-        req.user.Avatar = undefined;
-        req.session.user.Avatar = undefined;
+        if (req.session.user.id == req.user.id) {
+            req.user.Avatar = undefined;
+            req.session.user.Avatar = undefined;
+        }
         res.render('users/edit', {
             user: req.user
         });
