@@ -35,9 +35,7 @@
                     <div class="quizzContainer">
                         <% if (quizzes[i].Attachment) { %>
                             <div class="caption">
-                                <div class="quizzTitle">
-                                    <h4><%= quizzes[i].question %></h4>
-                                </div>
+                                <h4 class="quizzTitle"><%= quizzes[i].question %></h4>
                                 <h3>
                                     <a href="/quizzes/<%= quizzes[i].id %>" class="label label-danger" rel="tooltip" title="answer">Answer</a>
                                 </h3>
@@ -76,7 +74,7 @@
                             </div>
                         <% } else { %>
                             <div class="noFoto">
-                                <h4><%= quizzes[i].question %></h4>
+                                <h4 class="quizzTitle"><%= quizzes[i].question %></h4>
                                 <h3>
                                     <a href="/quizzes/<%= quizzes[i].id %>" class="label label-danger" rel="tooltip" title="answer">Answer</a>
                                 </h3>
