@@ -3,12 +3,12 @@
 module.exports = {
     up: function(queryInterface, Sequelize) {
         return queryInterface.createTable(
-            'QuizCategories', {
-                QuizId: {
+            'Followers', {
+                FollowerId: {
                     type: Sequelize.INTEGER,
                     allowNull: false
                 },
-                CategoryId: {
+                FollowedId: {
                     type: Sequelize.INTEGER,
                     allowNull: false
                 },
@@ -24,10 +24,9 @@ module.exports = {
                 sync: {
                     force: true
                 }
-            }
-        );
+            });
     },
     down: function(queryInterface, Sequelize) {
-        return queryInterface.dropTable('QuizCategories');
+        return queryInterface.dropTable('Followers');
     }
 };

@@ -5,6 +5,7 @@ var url = require('url');
 
 exports.new = function(req, res, next) {
 
+    // get hiden field redir
     var redir = req.query.redir || url.parse(req.headers.referer || "/").pathname;
 
     if (redir === "/session" || redir === "users/new") {
@@ -22,15 +23,16 @@ exports.create = function(req, res, next) {
     var user_name = req.body.username;
     var password = req.body.password;
 
+    // get authenticated user and save it in req.session instance
     authenticate(user_name, password).then(function(user) {
-
         if (user) {
             req.session.user = {
                 id: user.id,
                 username: user.username,
                 isAdmin: user.isAdmin,
                 mail: user.mail,
-                Avatar: user.Avatar
+                Avatar: user.Avatar,
+                Follower: user.Follower
             };
             res.redirect(redir);
         } else {
@@ -56,10 +58,13 @@ exports.loginRequired = function(req, res, next) {
 };
 
 var authenticate = function(username, password) {
-
+    // find user through username and password including associated models
     return models.User.findOne({
         include: [{
             model: models.Avatar
+        }, {
+            model: models.User,
+            as: 'Follower'
         }],
         where: {
             username: username

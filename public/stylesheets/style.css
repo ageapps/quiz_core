@@ -25,6 +25,9 @@ a {
 a:hover {
     color: #30395C;
 }
+h1, h2, h3, h4, h5, h6 {
+    color: #4a6491;
+}
 form .form-group div, form .form-group label {
     margin-bottom: 10px;
 }
@@ -62,9 +65,8 @@ img.avatar.img-circle {
 li.dropdown {
     margin-right: 15px;
 }
-h1, h2, h3, h4, h5, h6 {
-    color: #4a6491;
-}
+
+/* Login View */
 #login-dp {
     min-width: 250px;
     padding: 14px;
@@ -91,13 +93,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Profile container */
-
 .profile {
     margin: 20px 0;
 }
 
 /* Profile sidebar */
-
 .profile-sidebar {
     padding: 20px 0 10px 0;
     background: #fff;
@@ -176,7 +176,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Profile Content */
-
 .profile-content {
     padding: 20px;
     background: #fff;
@@ -198,8 +197,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 87px;
 }
 
-/*tables*/
-
+/* Panel Tables */
 .panel-table .panel-body {
     padding: 0;
 }
@@ -227,10 +225,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-/*
-used to vertically center elements, may need modification if you're not using default sizes.
-*/
-
+/* Vertically center elements in Grid of Quizzes */
 .panel-table .panel-footer .col {
     line-height: 34px;
     height: 34px;
@@ -243,8 +238,7 @@ used to vertically center elements, may need modification if you're not using de
     line-height: 34px;
 }
 
-/*grid of quizzes*/
-
+/* Grid of quizzes */
 .quizzContainer {
     position: relative;
     overflow: hidden;
@@ -333,7 +327,6 @@ used to vertically center elements, may need modification if you're not using de
 	border-right-color:#ddd;
 	border-width:8px;
 }
-
 
 @media(max-width:768px) {
     #login-dp {

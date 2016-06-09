@@ -8,20 +8,19 @@
 <br>
 <div class="container background-light">
     <br>
+    <!-- QUIZ QUESTION -->
     <div class="row">
         <form role="form" method="get" action="/quizzes/<%= quiz.id %>/check">
             <div class="form-group col-sm-5">
                 <label for="answer">
-
                     <% if (quiz.Attachment) { %>
-                        <img src="<%= quiz.Attachment.url %>" />
-                        <% } else { %>
-                            <img src="/images/question.jpg" width="50px" />
-                            <% } %>
-                                <p>
-                                    <h3><%= quiz.question %></h3>
-                                </p>
-
+                        <img src="<%= quiz.Attachment.url %>"/>
+                    <% } else { %>
+                        <img src="/images/question.jpg" width="50px"/>
+                    <% } %>
+                    <p>
+                        <h3><%= quiz.question %></h3>
+                    </p>
                 </label>
                 <br>
                 <p>
@@ -29,7 +28,9 @@
                 </p>
                 <br>
                 <div class="col-xs-12" style="height:5px;"></div>
-              <h3>  <button type="submit" class="btn btn-danger">Answer</button></h3>
+                <h3>
+                    <button type="submit" class="btn btn-danger">Answer</button>
+                </h3>
             </div>
         </form>
     </div>
@@ -43,15 +44,11 @@
                     </a>
 
                 </p>
-                <% } %>
+            <% } %>
         </div>
-
+    </div>
+    <div class="row">
         <div class="container">
-
-
-
-
-
             <% if (quiz.Comments.length > 0){ %>
                 <h3>Comments</h3>
                 <% for (var i in quiz.Comments){
@@ -63,9 +60,9 @@
                             <div class="thumbnailComment">
                                 <% if (comment.Author.Avatar) { %>
                                     <img src="<%= comment.Author.Avatar.url %>" class="icon-size img-circle">
-                                    <% } else { %>
-                                        <img src="/images/profile.png" class="icon-size img-circle" />
-                                        <% } %>
+                                <% } else { %>
+                                    <img src="/images/profile.png" class="icon-size img-circle"/>
+                                <% } %>
                             </div>
                             <!-- /thumbnail -->
                         </div>
@@ -73,15 +70,17 @@
                         <div class="col-sm-5">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <strong><a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
-                                      <%= comment.Author.username %>
-                                  </a></strong>
+                                    <strong>
+                                        <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
+                                            <%= comment.Author.username %>
+                                        </a>
+                                    </strong>
                                 </div>
                                 <div class="panel-body">
                                     <%= comment.text %>
-                                        <%  if (session.user &&  (session.user.isAdmin || session.user.id === quiz.AuthorId )){%>
-                                            <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')"></a>
-                                            <% } %>
+                                    <%  if (session.user &&  (session.user.isAdmin || session.user.id === quiz.AuthorId )){%>
+                                        <a class="glyphicon glyphicon-trash" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')"></a>
+                                    <% } %>
                                 </div>
                                 <!-- /panel-body -->
                             </div>
@@ -89,67 +88,64 @@
                         </div>
                         <!-- /col-sm-5 -->
                     </div>
-
-                    <% } else if(session.user && (session.user.isAdmin || session.user.id === quiz.AuthorId )){ %>
-                        <br>
-                        <div class="row">
-                            <div class="col-sm-1">
-                                <div class="thumbnailComment">
-                                    <% if (comment.Author.Avatar) { %>
-                                        <img src="<%= comment.Author.Avatar.url %>" class="icon-size img-circle">
-                                        <% } else { %>
-                                            <img src="/images/profile.png" class="icon-size img-circle" />
-                                            <% } %>
-                                </div>
-                                <!-- /thumbnail -->
+                <% } else if(session.user && (session.user.isAdmin || session.user.id === quiz.AuthorId )){ %>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <div class="thumbnailComment">
+                                <% if (comment.Author.Avatar) { %>
+                                    <img src="<%= comment.Author.Avatar.url %>" class="icon-size img-circle">
+                                <% } else { %>
+                                    <img src="/images/profile.png" class="icon-size img-circle"/>
+                                <% } %>
                             </div>
-                            <!-- /col-sm-1 -->
-                            <div class="col-sm-5">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <strong><a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
-                                              <%= comment.Author.username %>
-                                          </a></strong>
-                                    </div>
-                                    <div class="panel-body">
-                                        <%= comment.text %>
-                                            <p>
-                                                <a class="btn btn-primary" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>/accept?_method=PUT">
-                                        Accept
-                                        </a>
-                                            </p>
-                                            <p>
-                                                <a class="btn btn-primary" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')">
-                                        Delete
-                                      </a>
-                                            </p>
-
-                                    </div>
-                                    <!-- /panel-body -->
-                                </div>
-                                <!-- /panel panel-default -->
-                            </div>
-                            <!-- /col-sm-5 -->
+                            <!-- /thumbnail -->
                         </div>
-
-
-
-                        <% }  %>
-                            <% }  %>
-                                <% }  %>
-                                    <% if (session.user ){%>
-                                        <div class="text-center">
-                                            <button type="button" class="btn btn-primary" data-target="#comment" data-toggle="modal">
-                                                Add a comment <span class="glyphicon glyphicon-comment"></span></button>
-                                        </div>
-                                        <% } %>
-
-                                            <br>
-
-        </div>
+                        <!-- /col-sm-1 -->
+                        <div class="col-sm-5">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>
+                                        <a class="glyphicon glyphicon-user" aria-hidden="true" href="/users/<%= comment.AuthorId %>">
+                                            <%= comment.Author.username %>
+                                        </a>
+                                    </strong>
+                                </div>
+                                <div class="panel-body">
+                                    <%= comment.text %>
+                                    <p>
+                                        <a class="btn btn-primary" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>/accept?_method=PUT">
+                                            Accept
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a class="btn btn-primary" aria-hidden="true" href="/quizzes/<%= quiz.id%>/comments/<%= comment.id %>?_method=DELETE" onClick="return confirm('Delete ths comment?')">
+                                            Delete
+                                        </a>
+                                    </p>
+                                </div>
+                                <!-- /panel-body -->
+                            </div>
+                            <!-- /panel panel-default -->
+                        </div>
+                        <!-- /col-sm-5 -->
+                    </div>
+                <% }  %>
+            <% }  %>
+        <% }  %>
+        <% if (session.user ){%>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" data-target="#comment" data-toggle="modal">
+                    Add a comment
+                    <span class="glyphicon glyphicon-comment"></span>
+                </button>
+            </div>
+        <% } %>
+        <br>
     </div>
 </div>
+</div>
 
-
+<!-- INCLUDE MODALS -->
 <% include ../comments/new_modal.ejs %>
-    <% include ../quizzes/check.ejs %>
+<% include ../quizzes/check.ejs %>

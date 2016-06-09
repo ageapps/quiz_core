@@ -6,9 +6,9 @@
                 <div class="profile-userpic">
                     <% if (user.Avatar) { %>
                         <img src="<%= user.Avatar.url %>" class="avatar img-circle img-responsive">
-                        <% } else { %>
-                            <img src="/images/profile.png" class="avatar img-circle img-responsive" />
-                            <% } %>
+                    <% } else { %>
+                        <img src="/images/profile.png" class="avatar img-circle img-responsive"/>
+                    <% } %>
                 </div>
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
@@ -22,147 +22,179 @@
                 </div>
                 <!-- END SIDEBAR USER TITLE -->
                 <!-- SIDEBAR BUTTONS -->
-                <!-- <div class="profile-userbuttons">
-					<button type="button" class="btn btn-success btn-sm">Follow</button>
-					<button type="button" class="btn btn-danger btn-sm">Message</button>
-				</div> -->
+                <% if (session.user && session.user.id !== user.id){ %>
+                    <div class="profile-userbuttons">
+                        <% if (!canfollow){ %>
+                            <a href="/users/<%= user.id %>/follow?_method=DELETE" type="button" class="btn btn-danger btn-sm">UnFollow
+                                <span class="glyphicon glyphicon-ban-circle"></span>
+                            </a>
+                        <% } else{ %>
+                            <a href="/users/<%= user.id %>/follow?_method=POST" type="button" class="btn btn-success btn-sm">Follow
+                                <span class="glyphicon glyphicon-heart"></span>
+                            </a>
+                        <% } %>
+                    </div>
+                <% } %>
                 <% if (session.user){ %>
                     <div class="profile-userbuttons">
                         <% if (session.user.isAdmin && session.user.id !== user.id ){%>
                             <a type="button" class="btn btn-danger" href="/users/<%= user.id %>?_method=DELETE" onClick="return confirm('Delete User: <%= user.username %>')">
-                    Delete <span class="glyphicon glyphicon-trash"></span></a>
-                            <% } %>
+                                Delete
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        <% } %>
                     </div>
-                    <% } %>
-                        <!-- END SIDEBAR BUTTONS -->
-                        <!-- SIDEBAR MENU -->
-                        <div class="profile-usermenu">
-                            <ul class="nav">
-                                <li class="active">
-                                    <a href="#quizzes" data-toggle="tab">
-                                        <i class="glyphicon glyphicon-home"></i> Overview </a>
-                                </li>
-                                <li>
-                                    <a href="#followers" data-toggle="tab">
-                                        <i class="glyphicon glyphicon-user"></i> Followers</a>
-                                </li>
-                                <li>
-                                    <% if( session.user && (session.user.isAdmin || session.user.id === user.id )){%>
-                                        <a href="/users/<%=user.id %>/edit">
-                                            <i class="glyphicon glyphicon-pencil"> Account Settings</i></a>
-                                        <% } %>
-                                </li>
-                                <!-- <li>
-							<a href="#">
-							<i class="glyphicon glyphicon-user"></i>
-							Account Settings </a>
-						</li>
-						<li>
-							<a href="#" target="_blank">
-							<i class="glyphicon glyphicon-ok"></i>
-							Tasks </a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="glyphicon glyphicon-flag"></i>
-							Help </a>
-						</li> -->
-                            </ul>
-                        </div>
-                        <!-- END MENU -->
+                <% } %>
+                <!-- END SIDEBAR BUTTONS -->
+                <!-- SIDEBAR MENU -->
+                <div class="profile-usermenu">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#quizzes" data-toggle="tab">
+                                <i class="glyphicon glyphicon-home"></i>
+                                Overview
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#followers" data-toggle="tab">
+                                <i class="glyphicon glyphicon-user"></i>
+                                Followers</a>
+                        </li>
+                        <li>
+                            <% if( session.user && (session.user.isAdmin || session.user.id === user.id )){%>
+                                <a href="/users/<%=user.id %>/edit">
+                                    <i class="glyphicon glyphicon-pencil">
+                                        Account Settings</i>
+                                </a>
+                            <% } %>
+                        </li>
+
+                    </div>
+                </div>
             </div>
-        </div>
+            <!-- RIGHT PANEL -->
+            <div class="col-md-9 background-light">
+                <div class="tab-content profile-content">
 
-        <div class="col-md-9">
-            <div class="tab-content profile-content">
-
-
-                <!-- quizzes -->
-                <div class="tab-pane active" id="quizzes">
-
-                    <% var quizzes = user.Quizzes;
-             if  (quizzes.length > 0){ %>
+                    <!-- QUIZZES TAB -->
+                    <div class="tab-pane active" id="quizzes">
                         <div class="container">
-                            <h3><%= ( session.user &&  (session.user.isAdmin || session.user.id === user.id )) ? "Your " : "His "%> Quizzes</h3>
+                            <h3><%= ( session.user &&  (session.user.isAdmin || session.user.id === user.id )) ? "Your " : "His "%>
+                                Quizzes</h3>
                         </div>
-                        <br/>
-                        <div class="table-responsive">
-                            <table class="table-hover table">
-                                <thead class="thead-default">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Images</th>
-                                        <th>Quiz</th>
-                                        <th>Categories</th>
-                                        <% if (session.user){%>
-                                            <th><i class="glyphicon glyphicon-cog"></i></th>
-                                            <% } %>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for (var i in quizzes){ %>
+                        <% var quizzes = user.Quizzes;
+                 if  (quizzes.length > 0){ %>
+                            <br/>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered table-list">
+                                    <thead class="thead-default">
                                         <tr>
-                                            <th scope="row">
-                                                <%=  (+i+1) %>
-                                            </th>
-                                            <td>
-                                                <% if (quizzes[i].Attachment) { %>
-                                                    <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
+                                            <th>#</th>
+                                            <th>Images</th>
+                                            <th>Quiz</th>
+                                            <th>Categories</th>
+                                            <% if (session.user){%>
+                                                <th>
+                                                    <i class="glyphicon glyphicon-cog"></i>
+                                                </th>
+                                            <% } %>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for (var i in quizzes){ %>
+                                            <tr>
+                                                <th scope="row">
+                                                    <%=  (+i+1) %>
+                                                </th>
+                                                <td>
+                                                    <% if (quizzes[i].Attachment) { %>
+                                                        <img src="<%= quizzes[i].Attachment.url %>" width="50px"/>
                                                     <% } else { %>
-                                                        <img src="/images/question.jpg" width="50px" />
-                                                        <% } %>
-                                            </td>
-                                            <td>
-                                                <span>
-                                    <a href="/quizzes/<%= quizzes[i].id %>">
-                                        <%= quizzes[i].question %>
-                                    </a>
-                                    </span>
-                                            </td>
-                                            <td>
-                                                <% var categories = quizzes[i].QuizCategories;%>
+                                                        <img src="/images/question.jpg" width="50px"/>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <span>
+                                                        <a href="/quizzes/<%= quizzes[i].id %>">
+                                                            <%= quizzes[i].question %>
+                                                        </a>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <% var categories = quizzes[i].QuizCategories;%>
                                                     <% for (var j in categories){  %>
                                                         <a href="/category/<%=categories[j].id %>" class="<%=categories[j].icon %>"></a>
-                                                        <% } %>
-                                            </td>
-                                            <% if(session.user){ %>
-                                                <td>
-                                                    <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                                        <a class="btn btn-default" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                    <% } %>
+                                                </td>
+                                                <% if(session.user){ %>
+                                                    <td>
+                                                        <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                                            <a class="btn btn-default" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>/edit">
+                                                                <i class="glyphicon glyphicon-pencil"></i>
+                                                            </a>
                                                         <% } %>
 
-                                                            <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
-                                                                <a class="btn btn-danger" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')"><i class="glyphicon glyphicon-trash"></i></a>
-                                                                <% } %>
-                                                </td>
+                                                        <%  if (session.user.isAdmin || session.user.id === quizzes[i].AuthorId ){%>
+                                                            <a class="btn btn-danger" aria-hidden="true" href="/quizzes/<%= quizzes[i].id %>?_method=DELETE" onClick="return confirm('Delete: <%= quizzes[i].question %>')">
+                                                                <i class="glyphicon glyphicon-trash"></i>
+                                                            </a>
+                                                        <% } %>
+                                                    </td>
                                                 <% } %>
 
-                                        </tr>
+                                            </tr>
                                         <% } %>
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
 
-                        </div>
-
+                            </div>
 
                         <% } else{ %>
                             <div class="container">
-                                <h3>No quiz was found from this user </h3>
+                                <h3>No quiz was found from this user
+                                </h3>
                             </div>
 
-                            <% } %>
-                </div>
+                        <% } %>
+                    </div>
 
-                <!-- followers -->
-                <div class="tab-pane" id="followers">
-                    <div class="jumbotron">
-                        <h1>Comming soon...</h1>
-                        <img class="center-block" src="/images/quiz.png">
+                    <!-- FOLLOWERS TAB -->
+                    <div class="tab-pane" id="followers">
+                        <div class="container">
+                            <h3><%= ( session.user &&  (session.user.isAdmin || session.user.id === user.id )) ? "Your " : "His "%>
+                                Followers</h3>
+                        </div>
+                        <% var followers = user.Follower;
+                   if  (followers.length > 0){ %>
+                            <% for (var i in followers){ %>
+                                <a href="/users/<%= followers[i].id %>">
+                                    <div class="col-xs-3">
+                                        <div class="well well-sm">
+                                            <div class="media text-center">
+                                                <% if (user.Avatar) { %>
+                                                    <img src="<%= followers[i].Avatar.url %>" class="icon-size img-circle">
+                                                <% } else { %>
+                                                    <img src="/images/profile.png" class="icon-size img-circle"/>
+                                                <% } %>
+                                                <div class="media-body">
+                                                    <h4 class="media-heading"><%= followers[i].username %></h4>
+                                                    <p>
+                                                        <span class="label label-info"><%= followers[i].Quizzes.length %>
+                                                            Quizzes</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            <% } %>
+                        <% } else{ %>
+                            <div class="container">
+                                <h3>No followers were found</h3>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
-</div>

@@ -1,38 +1,35 @@
 var path = require("path");
 
-
-// Usar BBDD SQLite:
-//     DATABASE_URL = sqlite: ///
-//     DATABASE_STORAGE = quiz.sqlite
-// Usar BBDD Postgres:
-//     DATABASE_URL = postgres: //user:passwd@host:port/database
-
-var url = process.env.DATABASE_URL.match(/(.*)\:\/\/(.*?)\:(.*)@(.*)\:(.*)\/(.*)/);
-var DATABASE_PROTOCOL = url[1];
-var DATABASE_DIALECT = url[1];
-var DATABASE_USER = url[2];
-var DATABASE_PASSWORD = url[3];
-var DATABASE_HOST = url[4];
-var DATABASE_PORT = url[5];
-var DATABASE_NAME = url[6];
-var DATABASE_STORAGE = process.env.DATABASE_URL;
-
-
 var Sequelize = require("sequelize");
 
-var sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, {
-    dialect: DATABASE_DIALECT,
-    protocol: DATABASE_PROTOCOL,
-    port: DATABASE_PORT,
-    host: DATABASE_HOST,
-    storage: DATABASE_STORAGE,
-    omitNULL: true
-});
 
-// var sequelize = new Sequelize(null, null, null, {
-//     dialect: "sqlite",
-//     storage: "quiz.sqlite"
+// HEROKU USAGE
+
+// var url = process.env.DATABASE_URL.match(/(.*)\:\/\/(.*?)\:(.*)@(.*)\:(.*)\/(.*)/);
+// var DATABASE_PROTOCOL = url[1];
+// var DATABASE_DIALECT = url[1];
+// var DATABASE_USER = url[2];
+// var DATABASE_PASSWORD = url[3];
+// var DATABASE_HOST = url[4];
+// var DATABASE_PORT = url[5];
+// var DATABASE_NAME = url[6];
+// var DATABASE_STORAGE = process.env.DATABASE_URL;
+
+// var sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, {
+//     dialect: DATABASE_DIALECT,
+//     protocol: DATABASE_PROTOCOL,
+//     port: DATABASE_PORT,
+//     host: DATABASE_HOST,
+//     storage: DATABASE_STORAGE,
+//     omitNULL: true
 // });
+
+// LOCAL USAGE
+
+var sequelize = new Sequelize(null, null, null, {
+    dialect: "sqlite",
+    storage: "quiz.sqlite"
+});
 
 
 var Quiz = sequelize.import(path.join(__dirname, "quiz"));
@@ -57,7 +54,19 @@ Comment.belongsTo(User, {
     foreignKey: 'AuthorId'
 });
 
-// User - Quizz relations 1:N
+// User - User relation N:M
+User.belongsToMany(User, {
+  as: 'Follower',
+  through: 'Followers',
+  foreignKey: 'FollowedId'
+});
+User.belongsToMany(User, {
+    as: 'Followed',
+    through: 'Followers',
+    foreignKey: 'FollowerId'
+});
+
+// User - Quizz relation 1:N
 User.hasMany(Quiz, {
     foreignKey: 'AuthorId'
 });
@@ -66,7 +75,7 @@ Quiz.belongsTo(User, {
     foreignKey: 'AuthorId'
 });
 
-// Category - Quizz relations N:M
+// Category - Quizz relation N:M
 Quiz.belongsToMany(Category, {
     through: 'QuizCategories',
     as: "QuizCategories"
@@ -76,11 +85,11 @@ Category.belongsToMany(Quiz, {
     as: "QuizesInCategories"
 });
 
-// Attachment - Quizz relations 1:1
+// Attachment - Quizz relation 1:1
 Attachment.belongsTo(Quiz);
 Quiz.hasOne(Attachment);
 
-// Avatar - User relations 1:1
+// Avatar - User relation 1:1
 Avatar.belongsTo(User);
 User.hasOne(Avatar);
 

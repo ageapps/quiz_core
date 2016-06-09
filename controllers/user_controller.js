@@ -8,13 +8,11 @@ var cloudinary_image_options = {
     crop: "limit",
     with: 200,
     height: 200,
-    radius: 5,
-    border: "0px_solid_blue",
     tags: ["core", "quiz-2016"]
 };
 
 exports.load = function(req, res, next, userId) {
-
+    // find through userId including associated models
     models.User.findById(userId, {
         include: [{
             model: models.Quiz,
@@ -28,12 +26,20 @@ exports.load = function(req, res, next, userId) {
             }]
         }, {
             model: models.Avatar
+        }, {
+            model: models.User,
+            as: 'Follower',
+            include: [{
+                model: models.Avatar
+            }, {
+                model: models.Quiz
+            }]
         }]
     }).then(function(user) {
         if (user) {
-            console.log("-----------------USER-------------------");
-            console.log(JSON.stringify(user));
+            // pre-load user in req
             req.user = user;
+            //console.log(JSON.stringify(user));
             next();
         } else {
             throw new Error(userId + "Does not exist");
@@ -45,12 +51,14 @@ exports.load = function(req, res, next, userId) {
 exports.index = function(req, res, next) {
     models.User.findAll().then(function(users) {
         if (req.params.format == "json") {
+            // JSON request
             res.json(users);
         } else {
+            var search = ""; // no search text
             res.render('users/index', {
                 users: users,
                 indexTitle: "Look for Users",
-                search: ""
+                search: search
             });
         }
     }).catch(function(error) {
@@ -60,16 +68,22 @@ exports.index = function(req, res, next) {
 
 exports.user = function(req, res, next) {
     if (req.params.format == "json") {
+        // JSON request
         res.json(req.user);
     } else {
-        var answer = req.query.answer || "";
+        var canfollow = checkFollowed(req);
+        //console.log("Can follow " + canfollow);
         res.render("users/user", {
             user: req.user,
+            canfollow: canfollow
         });
     }
 };
+
+
 exports.search = function(req, res, next) {
     var text = req.query.search || "";
+    // find searched Users
     models.User.findAll({
         where: {
             username: {
@@ -143,7 +157,7 @@ exports.create = function(req, res, next) {
 
 exports.saveAvatar = function(req, res, next) {
 
-    console.log(JSON.stringify(req.body));
+    //console.log(JSON.stringify(req.body));
     if (!req.file) {
         req.flash('info', 'User Foto was deleted.');
         console.log("no file was uploaded");
@@ -158,7 +172,7 @@ exports.saveAvatar = function(req, res, next) {
                 return;
             });
         }
-        // update session data
+        // update session instance
         req.user.Avatar = undefined;
         req.session.user.Avatar = undefined;
         res.render('users/edit', {
@@ -167,12 +181,12 @@ exports.saveAvatar = function(req, res, next) {
         return;
     } else {
 
-        console.log("saving to clodinary");
+        //console.log("saving to clodinary");
 
         // Save Image in Cloudinary
         return uploadResourceToCloudinary(req).then(function(uploadResult) {
             if (req.user.Avatar) {
-                console.log("updating user foto");
+                //console.log("updating user foto");
                 // Update Avatar in DB.
                 return updateAvatar(req, uploadResult, req.user).then(function() {
                     req.flash("success", "User foto succesfully edited");
@@ -181,7 +195,7 @@ exports.saveAvatar = function(req, res, next) {
                     });
                 });
             } else {
-                console.log("creating user foto");
+                //console.log("creating user foto");
                 // Create new Attachment in DB.
                 return createAvatar(req, uploadResult, req.user).then(function() {
                     req.flash("success", "User foto succesfully created");
@@ -207,8 +221,8 @@ exports.update = function(req, res, next) {
             username: newUsername
         }
     }).then(function(user) {
-
-        if (user) {
+        // if user found with the username is different that the actual user
+        if (user && user.id !== req.user.id) {
             req.flash('error', "Username allready exists");
             return res.render('users/edit', {
                 user: req.user
@@ -248,8 +262,8 @@ exports.update = function(req, res, next) {
 };
 
 exports.edit = function(req, res, next) {
-    var user = req.user;
 
+    var user = req.user;
     res.render('users/edit', {
         user: user,
     });
@@ -292,9 +306,9 @@ exports.destroy = function(req, res, next) {
             });
 
         });
-
         req.flash("success", "User deleted succesfully. His questions where also deleted ");
         res.redirect("/users");
+
     }).catch(function(error) {
         req.flash("error", "Errors while deleting User: " + error.message);
         next(error);
@@ -326,11 +340,86 @@ exports.adminAndNotMyselfRequired = function(req, res, next) {
 
 };
 
+exports.follow = function(req, res, next) {
+    var user = req.user;
+    var loggedUser = req.session.user;
+
+    // find through current logged id including associated models, the logged user
+    models.User.findById(loggedUser.id, {
+        include: [{
+            model: models.Quiz,
+            include: [{
+                model: models.Category,
+                as: 'QuizCategories'
+            }, {
+                model: models.Attachment
+            }, {
+                model: models.Comment
+            }]
+        }, {
+            model: models.Avatar
+        }, {
+            model: models.User,
+            as: 'Follower'
+        }]
+    }).then(function(follower) {
+        if (follower) {
+            // add logged user to follower table from visited user
+            user.addFollower(follower).then(function() {
+                // console.log(JSON.stringify(user));
+                req.flash('success', 'You are following ' + user.username);
+                res.redirect("/users/" + user.id);
+
+            });
+        } else {
+            throw new Error("Error Following " + user.username);
+        }
+    }).catch(function(error) {
+        next(error);
+    });
+};
+exports.unfollow = function(req, res, next) {
+    var user = req.user;
+    var loggedUser = req.session.user;
+    // find through current logged id including associated models, the logged user
+    models.User.findById(loggedUser.id, {
+        include: [{
+            model: models.Quiz,
+            include: [{
+                model: models.Category,
+                as: 'QuizCategories'
+            }, {
+                model: models.Attachment
+            }, {
+                model: models.Comment
+            }]
+        }, {
+            model: models.Avatar
+        }, {
+            model: models.User,
+            as: 'Follower'
+        }]
+    }).then(function(follower) {
+        if (follower) {
+            // remove logged user from follower table from visited user
+            user.removeFollower(follower).then(function() {
+                //console.log(JSON.stringify(user));
+                req.flash('success', 'You stopped following ' + user.username);
+                res.redirect("/users/" + user.id);
+            });
+        } else {
+            throw new Error("Error UnFollowing " + user.username);
+        }
+    }).catch(function(error) {
+        next(error);
+    });
+};
+
+
 function uploadResourceToCloudinary(req) {
     return new Promise(function(resolve, reject) {
 
-
-        console.log("uploadResourceToCloudinary");
+        //console.log("uploadResourceToCloudinary");
         var path = req.file.path;
         cloudinary.uploader.upload(path, function(result) {
                 fs.unlink(path); // delete the uploaded image from ./uploads
@@ -406,4 +495,17 @@ function createAvatar(req, uploadResult, user) {
             req.flash('error', 'There was an error saving the image: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
+};
+
+function checkFollowed(req) {
+    var result = true;
+    if (!req.session.user) {
+        return false;
+    }
+    req.user.Follower.forEach(function(user) {
+        if (user.id === req.session.user.id) {
+            result = false;
+        }
+    });
+    return result;
 }

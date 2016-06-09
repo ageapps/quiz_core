@@ -1,4 +1,5 @@
 <script>
+    // Check if Passwords are filled in and are the same
     function confirmPassword() {
         var pw1 = document.getElementById('user_password').value;
         var pw2 = document.getElementById('user_confirm_password').value;
@@ -20,7 +21,9 @@
         //  We can attach the `fileselect` event to all file inputs on the page
         $(document).on('change', ':file', function() {
             var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                numFiles = input.get(0).files
+                    ? input.get(0).files.length
+                    : 1,
                 label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
             input.trigger('fileselect', [numFiles, label]);
         });
@@ -30,13 +33,16 @@
             $(':file').on('fileselect', function(event, numFiles, label) {
 
                 var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+                    log = numFiles > 1
+                        ? numFiles + ' files selected'
+                        : label;
 
                 if (input.length) {
                     input.val(log);
                 } else {
-                    if (log) alert(log);
-                }
+                    if (log)
+                        alert(log);
+                    }
 
             });
         });
@@ -50,31 +56,32 @@
         <div class="container background-light">
             <br>
             <form role="form" method="post" action="/users/<%= user.id %>" enctype="multipart/form-data">
-                <!-- left column -->
+                <!-- AVATAR COLUMN -->
                 <div class="col-md-3">
                     <div class="text-center">
                         <% if (user.Avatar) { %>
                             <img src="<%= user.Avatar.url%>" class="avatar img-circle" alt="avatar">
-                            <% } else { %>
-                                <img src="/images/profile.png" class="avatar img-circle" />
-                                <% } %>
-                                    <h6 class="profile-usertitle-role">Change your profile photo</h6>
-                                    <div class="input-group">
-                                        <label class="input-group-btn">
-                                            <span class="btn btn-primary">
-                                        Browse&hellip; <input type="file" name="image" style="display: none;" multiple>
-                                        </span>
-                                        </label>
-                                        <input type="text" class="form-control" readonly>
-                                    </div>
-                                    <br>
-                                    <input type="submit" class="btn btn-success" value="Save Foto">
+                        <% } else { %>
+                            <img src="/images/profile.png" class="avatar img-circle"/>
+                        <% } %>
+                        <h6 class="profile-usertitle-role">Change your profile photo</h6>
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Browse&hellip;
+                                    <input type="file" name="image" style="display: none;" multiple>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <br>
+                        <input type="submit" class="btn btn-success" value="Save Foto">
                     </div>
                 </div>
             </form>
-            <!-- form -->
+            <!-- FORM -->
             <form role="form" method="post" action="/users/<%= user.id %>?_method=PUT">
-                <!-- edit column -->
+                <!-- EDIT COLUMN -->
                 <div class="col-md-9 personal-info">
                     <h3>Personal info</h3>
                     <div class="form-group">
@@ -94,13 +101,13 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Password:</label>
                         <div class="col-md-8">
-                            <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" />
+                            <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Confirm password:</label>
                         <div class="col-md-8">
-                            <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" />
+                            <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -120,4 +127,3 @@
         </div>
     </div>
 </div>
-<hr>

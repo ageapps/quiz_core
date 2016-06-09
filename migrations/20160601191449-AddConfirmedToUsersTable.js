@@ -9,7 +9,6 @@ module.exports = {
             }
         );
     },
-
     down: function(queryInterface, Sequelize) {
         return queryInterface.removeColumn('Users', "confirmed");
     }

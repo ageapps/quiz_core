@@ -9,8 +9,7 @@ module.exports = {
             }
         );
     },
-
     down: function(queryInterface, Sequelize) {
-          return queryInterface.removeColumn('Comments', "accepted");
+        return queryInterface.removeColumn('Comments', "accepted");
     }
 };

@@ -7,19 +7,17 @@ var cloudinary = require('cloudinary');
 var fs = require('fs');
 var Promise = require('promise');
 
-
+// set cloudinary options for uploaded images
 var cloudinary_image_options = {
     crop: "limit",
     with: 200,
     height: 200,
-    radius: 5,
-    border: "0px_solid_blue",
     tags: ["core", "quiz-2016"]
 };
 
 
 exports.load = function(req, res, next, quizId) {
-    // find quizz
+    // find through quizId including associated models
     models.Quiz.findById(quizId, {
         include: [{
             model: models.Comment,
@@ -38,7 +36,9 @@ exports.load = function(req, res, next, quizId) {
         }]
     }).then(function(quiz) {
         if (quiz) {
+            // pre-load quiz in req
             req.quiz = quiz;
+            //console.log(JSON.stringify(quiz));
             next();
         } else {
             throw new Error(quizId + "Does not exist");
@@ -50,7 +50,7 @@ exports.load = function(req, res, next, quizId) {
 
 
 exports.index = function(req, res, next) {
-
+    // find all quizzes including associated models
     models.Quiz.findAll({
         include: [{
             model: models.User,
@@ -63,10 +63,10 @@ exports.index = function(req, res, next) {
         }]
     }).then(function(quizzes) {
         if (req.params.format == "json") {
+            // JSON request
             res.json(quizzes);
         } else {
-            // all quizzes
-            var search = "";
+            var search = ""; // no search text
             res.render('quizzes/index', {
                 quizzes: quizzes,
                 indexTitle: "Look for a Quizz",
@@ -79,11 +79,12 @@ exports.index = function(req, res, next) {
 };
 
 exports.question = function(req, res, next) {
+
     if (req.params.format == "json") {
+        // JSON request
         res.json(req.quiz);
     } else {
         var answer = req.query.answer || "";
-        console.log(JSON.stringify(req.quiz));
         res.render("quizzes/question", {
             quiz: req.quiz,
             answer: answer,
@@ -97,17 +98,20 @@ exports.question = function(req, res, next) {
 
 
 exports.check = function(req, res, next) {
+
     var answer = req.query.answer || "";
-    var result = ((answer === req.quiz.answer) ? "Correct" : "Wrong");
+    // check resut
+    //console.log(answer.toLowerCase() + " -------- " + req.quiz.answer.toLowerCase());
+    var result = ((answer.toLowerCase() === req.quiz.answer.toLowerCase()) ? "Correct" : "Wrong");
     if (answer) {
-      res.render("quizzes/question", {
-          quiz: req.quiz,
-          comment: "",
-          result: result,
-          answer: answer,
-          answered: true,
-          QuizId: req.quiz.id
-      });
+        res.render("quizzes/question", {
+            quiz: req.quiz,
+            comment: "",
+            result: result,
+            answer: answer,
+            answered: true,
+            QuizId: req.quiz.id
+        });
     } else {
         res.redirect("/quizzes/" + req.quiz.id);
     }
@@ -115,8 +119,10 @@ exports.check = function(req, res, next) {
 };
 
 exports.search = function(req, res, next) {
+
     var text = req.query.search || "";
-    var title = text ? "Quizzes Found" : "Look for a Quizz"
+    var title = text ? "Quizzes Found" : "Look for a Quizz";
+    // find searched quizzes including associated models
     models.Quiz.findAll({
         include: [{
             model: models.User,
@@ -134,6 +140,7 @@ exports.search = function(req, res, next) {
         }
     }).then(function(quizzes) {
         if (req.params.format == "json") {
+            // JSON request
             res.json(quizzes);
         } else {
             res.render('quizzes/index', {
@@ -148,10 +155,12 @@ exports.search = function(req, res, next) {
 
 };
 exports.new = function(req, res, next) {
+
     var quiz = models.Quiz.build({
         question: "",
         answer: ""
     });
+    // find all categories
     models.Category.findAll().then(function(categories) {
         res.render('quizzes/new', {
             quiz: quiz,
@@ -184,7 +193,7 @@ exports.create = function(req, res, next) {
         });
         return;
     }
-
+    // save quiz
     quiz.save({
         fields: ["question", "answer", "AuthorId"]
     }).then(function(quiz) {
@@ -201,7 +210,6 @@ exports.create = function(req, res, next) {
                     // No file
                     return;
                 }
-
                 // Save Image in Cloudinary
                 return uploadResourceToCloudinary(req).then(function(uploadResult) {
                     // Create new Attachment in DB.
@@ -210,8 +218,6 @@ exports.create = function(req, res, next) {
             }).then(function() {
                 res.redirect("/quizzes");
             });
-
-
         });
     }).catch(Sequelize.ValidationError, function(error) {
 
@@ -227,7 +233,6 @@ exports.create = function(req, res, next) {
                 next(error);
             });
         });
-
     }).catch(function(error) {
         req.flash("error", "Errors while creating Quiz: " + error.message);
         next(error);
@@ -249,7 +254,7 @@ exports.update = function(req, res, next) {
             }
         }).then(function(categories) {
             quiz.setQuizCategories(categories).then(function() {
-                // Sin imagen: Eliminar attachment e imagen viejos.
+                // No Image, delete old Image and Attachment
                 if (!req.file) {
                     req.flash('info', 'Quiz without Image.');
                     if (quiz.Attachment) {
@@ -267,6 +272,8 @@ exports.update = function(req, res, next) {
                         res.redirect("/quizzes");
                     });
                 });
+            }).then(function() {
+                res.redirect("/quizzes");
             });
         });
     }).catch(Sequelize.ValidationError, function(error) {
@@ -296,7 +303,7 @@ exports.update = function(req, res, next) {
 
 exports.edit = function(req, res, next) {
     var quiz = req.quiz;
-
+    // find all categories
     models.Category.findAll().then(function(categories) {
         if (categories) {
             req.categories = categories;
@@ -338,7 +345,7 @@ exports.ownershipRequired = function(req, res, next, quizId) {
         console.log("Denied operation. The logged User is not the owner or Administrator");
         res.send(403);
     }
-}
+};
 
 function uploadResourceToCloudinary(req) {
     return new Promise(function(resolve, reject) {
@@ -357,8 +364,8 @@ function uploadResourceToCloudinary(req) {
             },
             cloudinary_image_options
         );
-    })
-}
+    });
+};
 
 function updateAttachment(req, uploadResult, quiz) {
     if (!uploadResult) {
@@ -391,7 +398,7 @@ function updateAttachment(req, uploadResult, quiz) {
             req.flash('error', 'Image could not be saved: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
-}
+};
 
 function createAttachment(req, uploadResult, quiz) {
     if (!uploadResult) {
@@ -412,4 +419,4 @@ function createAttachment(req, uploadResult, quiz) {
             req.flash('error', 'Image could not be saved: ' + error.message);
             cloudinary.api.delete_resources(uploadResult.public_id);
         });
-}
+};

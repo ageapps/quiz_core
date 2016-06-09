@@ -1,3 +1,4 @@
+<!-- EDIT AND NEW QUIZ FORM -->
 <fieldset class="form-group">
     <label for="question">Question</label>
     <input type="text" class="form-control" name="quiz[question]" placeholder="Enter your Question" value="<%= quiz.question %>">
@@ -13,13 +14,13 @@
             <option selected="true" value="<%= quiz.QuizCategories[i].id%>">
                 <%= quiz.QuizCategories[i].text%>
             </option>
-            <% } %>
-                <option data-divider="true"></option>
-                <% for (var i in categories){ %>
-                    <option value="<%= categories[i].id%>">
-                        <%= categories[i].text%>
-                    </option>
-                    <% } %>
+        <% } %>
+        <option data-divider="true"></option>
+        <% for (var i in categories){ %>
+            <option value="<%= categories[i].id%>">
+                <%= categories[i].text%>
+            </option>
+        <% } %>
     </select>
 </fieldset>
 <fieldset class="form-group">
@@ -27,8 +28,9 @@
     <div class="input-group">
         <label class="input-group-btn">
             <span class="btn btn-primary">
-        Browse&hellip; <input type="file" name="image" style="display: none;"  id="image" name="image"  accept="image/*"  >
-        </span>
+                Browse&hellip;
+                <input type="file" name="image" style="display: none;" id="image" name="image" accept="image/*">
+            </span>
         </label>
         <input type="text" class="form-control" readonly>
     </div>

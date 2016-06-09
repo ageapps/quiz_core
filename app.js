@@ -52,8 +52,8 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
     if (req.session.user) {
         // Check if time is out
-        console.log("sessionStart: " + req.session.user.sessionStart );
-        console.log("DeltaTime: " + (new Date().getTime() - req.session.user.sessionStart) );
+        console.log("sessionStart: " + req.session.user.sessionStart);
+        console.log("DeltaTime: " + (new Date().getTime() - req.session.user.sessionStart));
         if (req.session.user.sessionStart && ((new Date().getTime() - req.session.user.sessionStart) > 120000)) {
             // Logout logged user
             req.session.user = undefined;

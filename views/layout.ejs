@@ -1,6 +1,6 @@
+<!-- WHOLE APP FRAME -->
 <!DOCTYPE html>
 <html>
-
 <head>
     <% include ../views/templates/head %>
 </head>
@@ -22,8 +22,6 @@
                     <% } %>
             </div>
             <% } %>
-
-
                 <% if (messages.success){ %>
                     <div id="flashsucces" class="container">
                         <% for (var i in messages.success){ %>
@@ -35,7 +33,6 @@
                             <% } %>
                     </div>
                     <% } %>
-
                         <% if (messages.error){ %>
                             <div id="flasherror" class="container">
                                 <% for (var i in messages.error){ %>
@@ -47,23 +44,16 @@
                                     <% } %>
                             </div>
                             <% } %>
-
     </section>
     <section>
         <div>
             <%- body %>
         </div>
     </section>
-
-
-
-
-
     <footer>
         <% include ../views/templates/footer %>
     </footer>
 
     <% include ../views/templates/scripts %>
 </body>
-
 </html>

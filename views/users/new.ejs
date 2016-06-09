@@ -1,4 +1,5 @@
 <script>
+    // Check if Passwords are filled in and are the same
     function confirmPassword() {
         var pw1 = document.getElementById('user_password').value;
         var pw2 = document.getElementById('user_confirm_password').value;
@@ -20,6 +21,7 @@
     <h1></h1>
     <div class="jumbotron background-light">
         <div class="container">
+            <!-- FORM -->
             <form action="/users" class="form-sign-in col-sm-6 col-sm-offset-3 vcenter" method="post">
                 <h2 class="form-signin-heading">New User</h2>
                 <label>User</label>
@@ -29,17 +31,17 @@
                 <input type="text" class="form-control" name="user[mail]" placeholder="Enter your Mail" required autofocus>
                 <div class="col-xs-12" style="height:20px;"></div>
                 <label>Password</label>
-                <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" required />
+                <input type="password" id="user_password" name="user[password]" class="form-control" placeholder="Enter your Password" required/>
                 <div class="col-xs-12" style="height:10px;"></div>
-                <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" required />
+                <input type="password" id="user_confirm_password" class="form-control" placeholder="Repeat your Password" required/>
                 <div class="col-xs-12" style="height:20px;"></div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="return confirmPassword()">Submit</button>
                 <div class="col-xs-12" style="height:10px;"></div>
                 <div class="col-xs-12 text-center">
-                <button type="reset" class="btn btn-primary">Reset</button>
-                <a href="/">
-                    <button type="button" class="btn btn-default">Cancel</button>
-                </a>
+                    <button type="reset" class="btn btn-primary">Reset</button>
+                    <a href="/">
+                        <button type="button" class="btn btn-default">Cancel</button>
+                    </a>
                 </div>
             </form>
         </div>

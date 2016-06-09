@@ -13,8 +13,6 @@ var upload = multer({
     dest: "./uploads/"
 });
 
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index');
@@ -34,10 +32,6 @@ router.param("userId", userController.load);
 router.param("commentId", commentController.load);
 router.param("categoryId", categoryContoller.load);
 router.param("userMailId", mailContoller.load);
-
-
-
-
 
 // quiz_controller routes
 router.get("/quizzes.:format?", quizController.index);
@@ -61,16 +55,17 @@ router.get("/users/search.:format?", userController.search);
 router.get('/users/:userId(\\d+).:format?', userController.user);
 router.get('/users/new', userController.new);
 router.post('/users', userController.create);
-router.post('/users/:userId(\\d+)',sessionController.loginRequired, userController.adminOrMyselfRequired, upload.single("image"), userController.saveAvatar);
+router.post('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminOrMyselfRequired, upload.single("image"), userController.saveAvatar);
 router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, userController.adminOrMyselfRequired, userController.edit);
 router.put('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminOrMyselfRequired, userController.update);
 router.delete('/users/:userId(\\d+)', sessionController.loginRequired, userController.adminAndNotMyselfRequired, userController.destroy);
+router.post('/users/:userId(\\d+)/follow', sessionController.loginRequired, userController.follow);
+router.delete('/users/:userId(\\d+)/follow', sessionController.loginRequired, userController.unfollow);
 
 // mail_controller routes
 router.get('/confirm', mailContoller.confirm);
 router.get('/confirm/:userMailId(\\d+)', mailContoller.confirmationMail);
 router.get('/notify/:commentMailId(\\d+)', mailContoller.notify);
-
 
 // session_controller routes
 router.get('/session', sessionController.new);
@@ -82,7 +77,5 @@ router.get('/category.:format?', categoryContoller.index);
 router.get('/category/search.:format?', categoryContoller.search);
 router.get('/category/:categoryId(\\d+).:format?', categoryContoller.category);
 router.get('/category/:categoryId(\\d+)/search.:format?', categoryContoller.searchInCategory);
-
-
 
 module.exports = router;
