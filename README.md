@@ -29,6 +29,7 @@ $ node ./bin/www
 
   - Image asociation to every Quiz and Users
   - User management and user roles
+  - Users can follow other users
   - Mail verification when signing up
   - Mail notification when any user posts a comment in your quiz
   - Comments asociated to every quiz, with confirmation by administrator or quiz author
