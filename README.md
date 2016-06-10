@@ -40,6 +40,7 @@ $ node ./bin/www
 + [express]: Web application framework
 + [cloudinary]: Image management and storage
 + [nodemailer]: E-Mail sending
++ [npm]: back-end package manager
 + [bower]: front-end package manager
 + [Bootstrap]: front-end framework
 + [jQuery]: front-end JS library
@@ -53,3 +54,4 @@ $ node ./bin/www
 [express]:http://expressjs.com
 [bower]:http://bower.io
 [Bootstrap]:http://getbootstrap.com
+[npm]:https://www.npmjs.com
